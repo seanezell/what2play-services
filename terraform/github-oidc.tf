@@ -49,9 +49,8 @@ resource "aws_iam_role_policy" "github_actions_terraform_policy" {
                     "iam:*",
                     "ec2:*",
                     "s3:*",
-                    "cognito-idp:DescribeUserPool",
-                    "kms:DescribeKey",
-                    "kms:GetKeyPolicy"
+                    "cognito-idp:*",
+                    "kms:*"
                 ]
                 Resource = "*"
             }
