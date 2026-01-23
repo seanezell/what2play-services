@@ -41,5 +41,12 @@ lambdas = {
         "memory_size": 512,
         "log_retention": 14,
         "description": "Handle calls to What2Play Add Games"
+    },
+    "what2play-game-lookup": {
+        "runtime": "nodejs22.x",
+        "timeout": 30,
+        "memory_size": 512,
+        "log_retention": 14,
+        "description": "Handle calls to What2Play Game Lookup"
     }
 }

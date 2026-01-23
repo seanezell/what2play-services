@@ -1,4 +1,7 @@
 #set($inputRoot = $input.path('$'))
 {
-    "crap": $input.json('$.crap')
+    "game_name": $input.json('$.game_name'),
+    "platform": $input.json('$.platform'),
+    "weight": $input.json('$.weight'),
+    "additional_details": $input.json('$.additional_details')
 }

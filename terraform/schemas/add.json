@@ -1,10 +1,25 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["crap"],
+    "required": ["game_name", "platform"],
     "properties": {
-        "crap": {
-            "type": "string"
+        "game_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 200
+        },
+        "platform": {
+            "type": "string",
+            "enum": ["PC", "PlayStation", "Xbox", "Nintendo Switch", "Mobile", "Board Game", "Other"]
+        },
+        "weight": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+        },
+        "additional_details": {
+            "type": "string",
+            "maxLength": 500
         }
     }
 }
