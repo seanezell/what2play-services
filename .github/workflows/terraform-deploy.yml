@@ -37,11 +37,28 @@ jobs:
 
       - name: Package Lambda Functions
         run: |
-          # Package add-games lambda
-          cd ../lambdas/add-games
-          npm install --production
-          zip -r ../../terraform/add-games.zip .
-          cd ../../terraform
+          # Create zip directory if it doesn't exist
+          mkdir -p zip
+          
+          # Package all lambda functions
+          for lambda_dir in ../lambdas/*/; do
+            if [ -d "$lambda_dir" ]; then
+              lambda_name=$(basename "$lambda_dir")
+              echo "Packaging lambda: $lambda_name"
+              
+              cd "$lambda_dir"
+              
+              # Install dependencies if package.json exists
+              if [ -f "package.json" ]; then
+                npm install --production
+              fi
+              
+              # Create zip file
+              zip -r "../../terraform/zip/${lambda_name}.zip" .
+              
+              cd - > /dev/null
+            fi
+          done
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
@@ -74,4 +91,4 @@ jobs:
 
       - name: Terraform Apply
         id: apply
-        run: terraform apply -var-file=variables/terraform.tfvars -auto-approve
+        run: terraform apply -var-file=terraform.tfvars -auto-approve
