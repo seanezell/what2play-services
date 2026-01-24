@@ -186,6 +186,20 @@ module "response_400" {
     StatusCode                      = "400"
     SelectionPattern                = ".*statusCode.*400.*"
     APIIntegrationResponseTemplates = { "application/json" = file("${path.module}/mapping-templates/responses-errors.vtl") }
+    APIIntegrationAllowedOrigin     = "'*'"
+}
+
+module "response_401" {
+    for_each = var.endpoints
+    source = "./modules/responses"
+    depends_on                      = [module.apigw_endpoints]
+    APIParentID                     = module.apigw.apigw_id
+    APIResourceID                   = module.apigw_endpoints["${each.key}"].output_apigw_resource_id
+    APIHTTPMethod                   = module.apigw_endpoints["${each.key}"].output_apigw_http_method
+    StatusCode                      = "401"
+    SelectionPattern                = ".*[Uu]nauthorized.*|.*[Aa]uthorization.*"
+    APIIntegrationResponseTemplates = { "application/json" = file("${path.module}/mapping-templates/responses-errors.vtl") }
+    APIIntegrationAllowedOrigin     = "'*'"
 }
 
 module "response_403" {
@@ -198,6 +212,7 @@ module "response_403" {
     StatusCode                      = "403"
     SelectionPattern                = ".*statusCode.*403.*"
     APIIntegrationResponseTemplates = { "application/json" = file("${path.module}/mapping-templates/responses-errors.vtl") }
+    APIIntegrationAllowedOrigin     = "'*'"
 }
 
 module "response_500" {
@@ -210,10 +225,11 @@ module "response_500" {
     StatusCode                      = "500"
     SelectionPattern                = ".*statusCode.*500.*"
     APIIntegrationResponseTemplates = { "application/json" = file("${path.module}/mapping-templates/responses-errors.vtl") }
+    APIIntegrationAllowedOrigin     = "'*'"
 }
 
 resource "aws_api_gateway_deployment" "apigw-deployment" {
-    depends_on  = [module.apigw_endpoints, module.response_400, module.response_403, module.response_500]
+    depends_on  = [module.apigw_endpoints, module.response_400, module.response_401, module.response_403, module.response_500]
     rest_api_id = module.apigw.apigw_id
     description = "Deployed on ${timestamp()}"
 

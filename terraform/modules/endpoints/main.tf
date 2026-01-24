@@ -49,7 +49,7 @@ resource "aws_api_gateway_integration_response" "integration_response" {
     status_code      = aws_api_gateway_method_response.method_response.status_code
     content_handling = var.APIContentHandling
     response_parameters = {
-        "method.response.header.Access-Control-Allow-Origin" = var.APIIntegrationAllowedOrigin
+        "method.response.header.Access-Control-Allow-Origin" = "'*'"
         "method.response.header.Content-Type"                = var.APIIntegrationContentType
     }
     depends_on         = [aws_api_gateway_integration.integration]
@@ -101,8 +101,8 @@ resource "aws_api_gateway_integration_response" "options_integration_response" {
     http_method = aws_api_gateway_method.options_method.http_method
     status_code = aws_api_gateway_method_response.options_method_response.status_code
     response_parameters = {
-        "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token,OMI_Authorization'",
-        "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,POST,PUT,DELETE'",
+        "method.response.header.Access-Control-Allow-Headers" = "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+        "method.response.header.Access-Control-Allow-Methods" = "'OPTIONS,POST,PUT,DELETE,GET'",
         "method.response.header.Access-Control-Allow-Origin"  = "'*'"
     }
     response_templates = { "application/json" = "" }

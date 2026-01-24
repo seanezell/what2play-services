@@ -19,10 +19,14 @@ exports.handler = async (event) => {
             };
         }
         
-        if (steamResults.length === 1) {
-            // Single match - high confidence
-            console.log(`Single match found: ${steamResults[0].name}`);
-            const gameDetails = await getSteamDetails(steamResults[0].id);
+        // Filter out DLC, cosmetics, and upgrades
+        const baseGames = filterBaseGames(steamResults, game_name);
+        console.log(`After filtering: ${baseGames.length} base games`);
+        
+        if (baseGames.length === 1) {
+            // Single base game match - high confidence
+            console.log(`Single base game found: ${baseGames[0].name}`);
+            const gameDetails = await getSteamDetails(baseGames[0].id);
             return {
                 confidence: 0.9,
                 source: 'steam',
@@ -30,16 +34,27 @@ exports.handler = async (event) => {
             };
         }
         
-        // Multiple matches - return suggestions for now
-        console.log(`Multiple matches found, returning suggestions`);
+        // Check for exact or very close matches
+        const exactMatch = findBestMatch(baseGames, game_name);
+        if (exactMatch && exactMatch.confidence > 0.8) {
+            console.log(`High confidence match: ${exactMatch.game.name}`);
+            const gameDetails = await getSteamDetails(exactMatch.game.id);
+            return {
+                confidence: exactMatch.confidence,
+                source: 'steam',
+                ...gameDetails
+            };
+        }
+        
+        // Multiple matches - return filtered suggestions
+        console.log(`Multiple matches found, returning filtered suggestions`);
         return {
             confidence: 0.3,
             source: 'steam',
             message: 'Multiple games found',
-            suggestions: steamResults.slice(0, 5).map(game => ({
+            suggestions: baseGames.slice(0, 3).map(game => ({
                 name: game.name,
-                steam_appid: game.id,
-                price: game.price
+                steam_appid: game.id
             }))
         };
         
@@ -51,6 +66,89 @@ exports.handler = async (event) => {
         };
     }
 };
+
+function filterBaseGames(games, searchTerm) {
+    const dlcKeywords = [
+        'dlc', 'expansion', 'season pass', 'upgrade', 'deluxe edition',
+        'cosmetic', 'skin', 'pack', 'bundle', 'soundtrack', 'ost',
+        'digital deluxe', 'gold edition', 'premium', 'collector',
+        'bonus', 'content pack', 'add-on', 'addon'
+    ];
+    
+    return games.filter(game => {
+        const gameName = game.name.toLowerCase();
+        
+        // Filter out obvious DLC/cosmetics
+        const isDLC = dlcKeywords.some(keyword => gameName.includes(keyword));
+        if (isDLC) return false;
+        
+        // Filter out games that contain hyphens followed by descriptors (likely DLC)
+        if (gameName.includes(' - ') && !searchTerm.toLowerCase().includes(' - ')) {
+            return false;
+        }
+        
+        return true;
+    });
+}
+
+function findBestMatch(games, searchTerm) {
+    const searchLower = searchTerm.toLowerCase().trim();
+    
+    for (const game of games) {
+        const gameLower = game.name.toLowerCase().trim();
+        
+        // Exact match
+        if (gameLower === searchLower) {
+            return { game, confidence: 0.95 };
+        }
+        
+        // Very close match (allowing for minor differences)
+        if (calculateSimilarity(gameLower, searchLower) > 0.85) {
+            return { game, confidence: 0.9 };
+        }
+    }
+    
+    return null;
+}
+
+function calculateSimilarity(str1, str2) {
+    // Simple similarity calculation
+    const longer = str1.length > str2.length ? str1 : str2;
+    const shorter = str1.length > str2.length ? str2 : str1;
+    
+    if (longer.length === 0) return 1.0;
+    
+    const editDistance = levenshteinDistance(longer, shorter);
+    return (longer.length - editDistance) / longer.length;
+}
+
+function levenshteinDistance(str1, str2) {
+    const matrix = [];
+    
+    for (let i = 0; i <= str2.length; i++) {
+        matrix[i] = [i];
+    }
+    
+    for (let j = 0; j <= str1.length; j++) {
+        matrix[0][j] = j;
+    }
+    
+    for (let i = 1; i <= str2.length; i++) {
+        for (let j = 1; j <= str1.length; j++) {
+            if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
+                matrix[i][j] = matrix[i - 1][j - 1];
+            } else {
+                matrix[i][j] = Math.min(
+                    matrix[i - 1][j - 1] + 1,
+                    matrix[i][j - 1] + 1,
+                    matrix[i - 1][j] + 1
+                );
+            }
+        }
+    }
+    
+    return matrix[str2.length][str1.length];
+}
 
 async function searchSteam(gameName) {
     return new Promise((resolve, reject) => {

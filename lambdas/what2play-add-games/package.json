@@ -1,0 +1,10 @@
+{
+  "name": "what2play-add-games",
+  "version": "1.0.0",
+  "description": "Add games to What2Play collection",
+  "main": "index.js",
+  "dependencies": {},
+  "engines": {
+    "node": ">=18"
+  }
+}

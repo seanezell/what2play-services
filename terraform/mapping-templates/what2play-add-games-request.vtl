@@ -3,5 +3,6 @@
     "game_name": $input.json('$.game_name'),
     "platform": $input.json('$.platform'),
     "weight": $input.json('$.weight'),
-    "additional_details": $input.json('$.additional_details')
+    "additional_details": $input.json('$.additional_details'),
+    "user_id": "$context.authorizer.claims.sub"
 }
