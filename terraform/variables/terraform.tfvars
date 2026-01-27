@@ -9,7 +9,7 @@ api_deploystage = "v1"
 
 domain_name = "api.seanezell.com"
 
-cognito_userpool_id = "us-west-2_CVFGuHPAu"
+cognito_userpool_id = "us-west-2_ISZbe9AFj"
 
 roots = [
     "games",
