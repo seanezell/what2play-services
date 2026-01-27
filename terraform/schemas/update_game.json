@@ -1,0 +1,15 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "platform": {
+            "type": "string",
+            "enum": ["PC", "PlayStation", "Xbox", "Nintendo Switch", "Mobile", "Board Game", "Other"]
+        },
+        "weight": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 10
+        }
+    }
+}

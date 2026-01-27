@@ -1,0 +1,7 @@
+{
+    "user_id": "$context.authorizer.claims.sub",
+    "http_method": "$context.httpMethod",
+    "game_id": "$input.params('game_id')",
+    "platform": $input.json('$.platform'),
+    "weight": $input.json('$.weight')
+}

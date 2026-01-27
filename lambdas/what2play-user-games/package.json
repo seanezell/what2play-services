@@ -1,0 +1,10 @@
+{
+  "name": "what2play-user-games",
+  "version": "1.0.0",
+  "description": "User game operations for What2Play",
+  "main": "index.js",
+  "dependencies": {},
+  "engines": {
+    "node": ">=18"
+  }
+}
