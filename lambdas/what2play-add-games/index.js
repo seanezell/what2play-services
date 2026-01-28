@@ -181,6 +181,7 @@ async function createGame(gameDetails) {
         Item: {
             PK: `GAME#${game_id}`,
             SK: 'METADATA',
+            game_id: game_id,
             name: gameDetails.name,
             description: gameDetails.description,
             steam_appid: gameDetails.steam_appid,
