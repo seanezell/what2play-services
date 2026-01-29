@@ -146,12 +146,19 @@ resource "aws_api_gateway_resource" "roots" {
     path_part   = each.value
 }
 
-module "apigw_endpoints" {
-    for_each = var.endpoints
-    source = "./modules/endpoints"
-    APIResourceID = module.apigw.apigw_id
-    APIParentID = each.value.root != "root" ? aws_api_gateway_resource.roots[each.value.root].id : module.apigw.apigw_root_resource_id
-    APIPathPart              = each.key
+module "apigw_resources" {
+    for_each = var.resources
+    source = "./modules/apigw-resources"
+    APIResourceID   = module.apigw.apigw_id
+    APIParentID     = each.value.root != "root" ? aws_api_gateway_resource.roots[each.value.root].id : module.apigw.apigw_root_resource_id
+    APIPathPart     = each.value.path
+}
+
+module "apigw_methods" {
+    for_each = var.methods
+    source = "./modules/apigw-methods"
+    APIResourceID = module.apigw_resources["${each.value.resource}"].output_apigw_resource_id
+    APIResourceRestAPIID = module.apigw.apigw_id
     APIHTTPMethod            = each.value.method
     APIIntegrationHTTPMethod = each.value.integration_method
     APIRequestModels         = each.value.request_schema != "" ? { "application/json" = aws_api_gateway_model.request_models["${each.key}"].name } : null
@@ -167,22 +174,43 @@ module "apigw_endpoints" {
     authorizer_id = module.apigw.cognito_authorizer_id
 }
 
+# module "apigw_endpoints" {
+#     for_each = var.endpoints
+#     source = "./modules/endpoints"
+#     APIResourceID = module.apigw.apigw_id
+#     APIParentID = each.value.root != "root" ? aws_api_gateway_resource.roots[each.value.root].id : module.apigw.apigw_root_resource_id
+#     APIPathPart              = each.value.path
+#     APIHTTPMethod            = each.value.method
+#     APIIntegrationHTTPMethod = each.value.integration_method
+#     APIRequestModels         = each.value.request_schema != "" ? { "application/json" = aws_api_gateway_model.request_models["${each.key}"].name } : null
+#     StatusCode               = "200" 
+#     APIIntegrationURI = each.value.uri_type != "uri" ? module.lambdas["${each.value.uri}"].invoke_arn : each.value.uri
+#     APIIntegrationType = each.value.type
+#     APIIntegrationRole = module.roles_n_policies.output_roleid
+#     APIRequestTemplates  = each.value.request_mapping != "" ? { "application/json" = file("${path.module}/mapping-templates/${each.value.request_mapping}.vtl") } : null
+#     APIResponseTemplates = each.value.response_mapping != "" ? { "application/json" = file("${path.module}/mapping-templates/${each.value.response_mapping}.vtl") } : null
+#     APIMethodRequestParameters      = each.value.method != "POST" ? each.value.methodReqParams : {}
+#     APIIntegrationRequestParameters = each.value.method != "POST" ? each.value.integrationReqParams : {}
+#     validator = each.value.validator == "body_validator" ? module.apigw.apigw_validator_body_id : module.apigw.apigw_validator_querystring_id
+#     authorizer_id = module.apigw.cognito_authorizer_id
+# }
+
 resource "aws_api_gateway_model" "request_models" {
-    for_each     = { for k, v in var.endpoints : k => v if v.method != "GET" && v.request_schema != "" }
+    for_each     = { for k, v in var.methods : k => v if v.model != "" }
     rest_api_id  = module.apigw.apigw_id
-    name         = "${each.key}Model"
+    name         = "${each.value.model}"
     description  = "request payload for ${each.key}"
     content_type = "application/json"
     schema       = file("${path.module}/schemas/${each.value.request_schema}.json")
 }
 
 module "response_400" {
-    for_each = var.endpoints
+    for_each = var.methods
     source = "./modules/responses"
-    depends_on                      = [module.apigw_endpoints]
+    depends_on                      = [module.apigw_methods]
     APIParentID                     = module.apigw.apigw_id
-    APIResourceID                   = module.apigw_endpoints["${each.key}"].output_apigw_resource_id
-    APIHTTPMethod                   = module.apigw_endpoints["${each.key}"].output_apigw_http_method
+    APIResourceID                   = module.apigw_resources["${each.value.resource}"].output_apigw_resource_id
+    APIHTTPMethod                   = each.value.method
     StatusCode                      = "400"
     SelectionPattern                = ".*statusCode.*400.*"
     APIIntegrationResponseTemplates = { "application/json" = file("${path.module}/mapping-templates/responses-errors.vtl") }
@@ -190,12 +218,12 @@ module "response_400" {
 }
 
 module "response_401" {
-    for_each = var.endpoints
+    for_each = var.methods
     source = "./modules/responses"
-    depends_on                      = [module.apigw_endpoints]
+    depends_on                      = [module.apigw_methods]
     APIParentID                     = module.apigw.apigw_id
-    APIResourceID                   = module.apigw_endpoints["${each.key}"].output_apigw_resource_id
-    APIHTTPMethod                   = module.apigw_endpoints["${each.key}"].output_apigw_http_method
+    APIResourceID                   = module.apigw_resources["${each.value.resource}"].output_apigw_resource_id
+    APIHTTPMethod                   = each.value.method
     StatusCode                      = "401"
     SelectionPattern                = ".*[Uu]nauthorized.*|.*[Aa]uthorization.*"
     APIIntegrationResponseTemplates = { "application/json" = file("${path.module}/mapping-templates/responses-errors.vtl") }
@@ -203,12 +231,12 @@ module "response_401" {
 }
 
 module "response_403" {
-    for_each = var.endpoints
+    for_each = var.methods
     source = "./modules/responses"
-    depends_on                      = [module.apigw_endpoints]
+    depends_on                      = [module.apigw_methods]
     APIParentID                     = module.apigw.apigw_id
-    APIResourceID                   = module.apigw_endpoints["${each.key}"].output_apigw_resource_id
-    APIHTTPMethod                   = module.apigw_endpoints["${each.key}"].output_apigw_http_method
+    APIResourceID                   = module.apigw_resources["${each.value.resource}"].output_apigw_resource_id
+    APIHTTPMethod                   = each.value.method
     StatusCode                      = "403"
     SelectionPattern                = ".*statusCode.*403.*"
     APIIntegrationResponseTemplates = { "application/json" = file("${path.module}/mapping-templates/responses-errors.vtl") }
@@ -216,12 +244,12 @@ module "response_403" {
 }
 
 module "response_500" {
-    for_each = var.endpoints
+    for_each = var.methods
     source = "./modules/responses"
-    depends_on                      = [module.apigw_endpoints]
+    depends_on                      = [module.apigw_methods]
     APIParentID                     = module.apigw.apigw_id
-    APIResourceID                   = module.apigw_endpoints["${each.key}"].output_apigw_resource_id
-    APIHTTPMethod                   = module.apigw_endpoints["${each.key}"].output_apigw_http_method
+    APIResourceID                   = module.apigw_resources["${each.value.resource}"].output_apigw_resource_id
+    APIHTTPMethod                   = each.value.method
     StatusCode                      = "500"
     SelectionPattern                = ".*statusCode.*500.*"
     APIIntegrationResponseTemplates = { "application/json" = file("${path.module}/mapping-templates/responses-errors.vtl") }
@@ -229,7 +257,7 @@ module "response_500" {
 }
 
 resource "aws_api_gateway_deployment" "apigw-deployment" {
-    depends_on  = [module.apigw_endpoints, module.response_400, module.response_401, module.response_403, module.response_500]
+    depends_on  = [module.apigw_resources, module.apigw_methods, module.response_400, module.response_401, module.response_403, module.response_500]
     rest_api_id = module.apigw.apigw_id
     description = "Deployed on ${timestamp()}"
 

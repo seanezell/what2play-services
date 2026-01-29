@@ -13,68 +13,125 @@ cognito_userpool_id = "us-west-2_ISZbe9AFj"
 
 roots = [
     "games",
-    "users",
+    "user",
+    "usernames",
     "groups",
 ]
 
-endpoints = {
-    "add": {
-        "root": "games"
-        "uri_type": "lambda"
-        "uri": "what2play-add-games"
-        "method": "POST"
-        "integration_method" : "POST",
-        "type" : "AWS",
-        "request_mapping" : "what2play-add-games-request",
-        "response_mapping" : "",
-        "request_schema" : "add",
-        "methodReqParams" : {},
-        "integrationReqParams" : {},
-        "validator" : "body_validator"
-    },
-    "games": {
-        "root": "users"
-        "uri_type": "lambda"
-        "uri": "what2play-user-games"
-        "method": "GET"
-        "integration_method" : "POST",
-        "type" : "AWS",
-        "request_mapping" : "what2play-user-games-request",
-        "response_mapping" : "",
-        "request_schema" : "",
-        "methodReqParams" : {},
-        "integrationReqParams" : {},
-        "validator" : "querystring_validator"
-    },
-    "remove": {
-        "root": "users"
-        "uri_type": "lambda"
-        "uri": "what2play-user-games"
-        "method": "DELETE"
-        "integration_method" : "POST",
-        "type" : "AWS",
-        "request_mapping" : "what2play-user-games-request",
-        "response_mapping" : "",
-        "request_schema" : "",
-        "methodReqParams" : {"method.request.path.game_id": true},
-        "integrationReqParams" : {"integration.request.path.game_id": "method.request.path.game_id"},
-        "validator" : "querystring_validator"
-    },
-    "update": {
-        "root": "users"
-        "uri_type": "lambda"
-        "uri": "what2play-user-games"
-        "method": "PUT"
-        "integration_method" : "POST",
-        "type" : "AWS",
-        "request_mapping" : "what2play-user-games-request",
-        "response_mapping" : "",
-        "request_schema" : "update_game",
-        "methodReqParams" : {"method.request.path.game_id": true},
-        "integrationReqParams" : {"integration.request.path.game_id": "method.request.path.game_id"},
-        "validator" : "body_validator"
-    }
-}
+# endpoints = {
+#     "add": {
+#         "root": "games",
+#         "path": "add",
+#         "uri_type": "lambda",
+#         "uri": "what2play-add-games",
+#         "method": "POST",
+#         "integration_method" : "POST",
+#         "type" : "AWS",
+#         "request_mapping" : "what2play-add-games-request",
+#         "response_mapping" : "",
+#         "request_schema" : "add",
+#         "model": "addGameModel",
+#         "methodReqParams" : {},
+#         "integrationReqParams" : {},
+#         "validator" : "body_validator"
+#     },
+#     "user-get-games": {
+#         "root": "user",
+#         "path": "games",
+#         "uri_type": "lambda",
+#         "uri": "what2play-user-games",
+#         "method": "GET",
+#         "integration_method" : "POST",
+#         "type" : "AWS",
+#         "request_mapping" : "what2play-user-games-request",
+#         "response_mapping" : "",
+#         "request_schema" : "",
+#         "model": "",
+#         "methodReqParams" : {},
+#         "integrationReqParams" : {},
+#         "validator" : "querystring_validator"
+#     },
+#     "user-delete-game": {
+#         "root": "user",
+#         "path": "{game_id}",
+#         "uri_type": "lambda",
+#         "uri": "what2play-user-games",
+#         "method": "DELETE",
+#         "integration_method" : "POST",
+#         "type" : "AWS",
+#         "request_mapping" : "what2play-user-games-request",
+#         "response_mapping" : "",
+#         "request_schema" : "",
+#         "model": "",
+#         "methodReqParams" : {"method.request.path.game_id": true},
+#         "integrationReqParams" : {"integration.request.path.game_id": "method.request.path.game_id"},
+#         "validator" : "querystring_validator"
+#     },
+#     "user-update-game": {
+#         "root": "user",
+#         "path": "{game_id}",
+#         "uri_type": "lambda",
+#         "uri": "what2play-user-games",
+#         "method": "PUT",
+#         "integration_method" : "POST",
+#         "type" : "AWS",
+#         "request_mapping" : "what2play-user-games-request",
+#         "response_mapping" : "",
+#         "request_schema" : "update_game",
+#         "model": "updateGameModel",
+#         "methodReqParams" : {"method.request.path.game_id": true},
+#         "integrationReqParams" : {"integration.request.path.game_id": "method.request.path.game_id"},
+#         "validator" : "body_validator"
+#     },
+#     "user-get-profile": {
+#         "root": "user",
+#         "path": "profile",
+#         "uri_type": "lambda",
+#         "uri": "what2play-user-profile",
+#         "method": "GET",
+#         "integration_method" : "POST",
+#         "type" : "AWS",
+#         "request_mapping" : "what2play-user-profile-request",
+#         "response_mapping" : "",
+#         "request_schema" : "",
+#         "model": "",
+#         "methodReqParams" : {},
+#         "integrationReqParams" : {},
+#         "validator" : "querystring_validator"
+#     },
+#     "user-put-profile": {
+#         "root": "user",
+#         "path": "profile",
+#         "uri_type": "lambda",
+#         "uri": "what2play-user-profile",
+#         "method": "PUT",
+#         "integration_method" : "POST",
+#         "type" : "AWS",
+#         "request_mapping" : "what2play-user-profile-request",
+#         "response_mapping" : "",
+#         "request_schema" : "user_profile",
+#         "model": "userProfileModel",
+#         "methodReqParams" : {},
+#         "integrationReqParams" : {},
+#         "validator" : "body_validator"
+#     },
+#     "username-validation": {
+#         "root": "usernames",
+#         "path": "validate",
+#         "uri_type": "lambda",
+#         "uri": "what2play-user-profile",
+#         "method": "POST",
+#         "integration_method" : "POST",
+#         "type" : "AWS",
+#         "request_mapping" : "what2play-user-profile-request",
+#         "response_mapping" : "",
+#         "request_schema" : "validate_username",
+#         "model": "validateUsernameModel",
+#         "methodReqParams" : {},
+#         "integrationReqParams" : {},
+#         "validator" : "body_validator"
+#     }
+# }
 
 lambdas = {
     "what2play-add-games": {
@@ -97,5 +154,143 @@ lambdas = {
         "memory_size": 512,
         "log_retention": 14,
         "description": "Handle user game operations (list/remove/update)"
+    },
+    "what2play-user-profile": {
+        "runtime": "nodejs22.x",
+        "timeout": 30,
+        "memory_size": 512,
+        "log_retention": 14,
+        "description": "Handle user profile operations"
+    }
+}
+
+resources = {
+    "add-games": {
+        "root": "games",
+        "path": "add"        
+    },
+    "user-games": {
+        "root": "user",
+        "path": "games"
+    },
+    "user-game_id": {
+        "root": "user",
+        "path": "{game_id}"
+    },
+    "user-profile": {
+        "root": "user",
+        "path": "profile"
+    }
+    "username-validation": {
+        "root": "usernames",
+        "path": "validate"
+    }
+}
+
+methods = {
+    "add": {
+        "resource": "add-games",
+        "uri_type": "lambda",
+        "uri": "what2play-add-games",
+        "method": "POST",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-add-games-request",
+        "response_mapping" : "",
+        "request_schema" : "add",
+        "model": "addGameModel",
+        "methodReqParams" : {},
+        "integrationReqParams" : {},
+        "validator" : "body_validator"
+    },
+    "user-get-games": {
+        "resource": "user-games",
+        "uri_type": "lambda",
+        "uri": "what2play-user-games",
+        "method": "GET",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-user-games-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {},
+        "integrationReqParams" : {},
+        "validator" : "querystring_validator"
+    },
+    "user-delete-game": {
+        "resource": "user-game_id",
+        "uri_type": "lambda",
+        "uri": "what2play-user-games",
+        "method": "DELETE",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-user-games-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {"method.request.path.game_id": true},
+        "integrationReqParams" : {"integration.request.path.game_id": "method.request.path.game_id"},
+        "validator" : "querystring_validator"
+    },
+    "user-update-game": {
+        "resource": "user-game_id",
+        "uri_type": "lambda",
+        "uri": "what2play-user-games",
+        "method": "PUT",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-user-games-request",
+        "response_mapping" : "",
+        "request_schema" : "update_game",
+        "model": "updateGameModel",
+        "methodReqParams" : {"method.request.path.game_id": true},
+        "integrationReqParams" : {"integration.request.path.game_id": "method.request.path.game_id"},
+        "validator" : "body_validator"
+    },
+    "user-get-profile": {
+        "resource": "user-profile",
+        "uri_type": "lambda",
+        "uri": "what2play-user-profile",
+        "method": "GET",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-user-profile-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {},
+        "integrationReqParams" : {},
+        "validator" : "querystring_validator"
+    },
+    "user-put-profile": {
+        "resource": "user-profile",
+        "uri_type": "lambda",
+        "uri": "what2play-user-profile",
+        "method": "PUT",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-user-profile-request",
+        "response_mapping" : "",
+        "request_schema" : "user_profile",
+        "model": "userProfileModel",
+        "methodReqParams" : {},
+        "integrationReqParams" : {},
+        "validator" : "body_validator"
+    },
+    "username-validation": {
+        "resource": "username-validation",
+        "uri_type": "lambda",
+        "uri": "what2play-user-profile",
+        "method": "POST",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-user-profile-request",
+        "response_mapping" : "",
+        "request_schema" : "validate_username",
+        "model": "validateUsernameModel",
+        "methodReqParams" : {},
+        "integrationReqParams" : {},
+        "validator" : "body_validator"
     }
 }

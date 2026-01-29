@@ -48,12 +48,22 @@ variable "roots" {
 	type = list(string)
 }
 
-variable "endpoints" {
-	description = "list of endpoints"
-	type = map(any)
-}
+# variable "endpoints" {
+# 	description = "list of endpoints"
+# 	type = map(any)
+# }
 
 variable "lambdas" {
 	description = "List of Lambda functions to create"
+	type        = map(any)
+}
+
+variable "resources" {
+	description = "API Gateway Resources"
+	type        = map(any)
+}
+
+variable "methods" {
+	description = "API Gateway Methods"
 	type        = map(any)
 }

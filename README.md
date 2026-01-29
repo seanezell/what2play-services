@@ -17,9 +17,11 @@ No requirements.
 | Name | Source | Version |
 |------|--------|---------|
 | <a name="module_apigw"></a> [apigw](#module\_apigw) | ./modules/apigw | n/a |
-| <a name="module_apigw_endpoints"></a> [apigw\_endpoints](#module\_apigw\_endpoints) | ./modules/endpoints | n/a |
+| <a name="module_apigw_methods"></a> [apigw\_methods](#module\_apigw\_methods) | ./modules/apigw-methods | n/a |
+| <a name="module_apigw_resources"></a> [apigw\_resources](#module\_apigw\_resources) | ./modules/apigw-resources | n/a |
 | <a name="module_lambdas"></a> [lambdas](#module\_lambdas) | ./modules/lambdas | n/a |
 | <a name="module_response_400"></a> [response\_400](#module\_response\_400) | ./modules/responses | n/a |
+| <a name="module_response_401"></a> [response\_401](#module\_response\_401) | ./modules/responses | n/a |
 | <a name="module_response_403"></a> [response\_403](#module\_response\_403) | ./modules/responses | n/a |
 | <a name="module_response_500"></a> [response\_500](#module\_response\_500) | ./modules/responses | n/a |
 | <a name="module_roles_n_policies"></a> [roles\_n\_policies](#module\_roles\_n\_policies) | ./modules/iam | n/a |
@@ -55,9 +57,10 @@ No requirements.
 | <a name="input_api_name"></a> [api\_name](#input\_api\_name) | api name | `string` | n/a | yes |
 | <a name="input_cognito_userpool_id"></a> [cognito\_userpool\_id](#input\_cognito\_userpool\_id) | cognito user pool id | `string` | n/a | yes |
 | <a name="input_domain_name"></a> [domain\_name](#input\_domain\_name) | domain name | `string` | n/a | yes |
-| <a name="input_endpoints"></a> [endpoints](#input\_endpoints) | list of endpoints | `map(any)` | n/a | yes |
 | <a name="input_lambdas"></a> [lambdas](#input\_lambdas) | List of Lambda functions to create | `map(any)` | n/a | yes |
+| <a name="input_methods"></a> [methods](#input\_methods) | API Gateway Methods | `map(any)` | n/a | yes |
 | <a name="input_policy_name"></a> [policy\_name](#input\_policy\_name) | policy name | `string` | n/a | yes |
+| <a name="input_resources"></a> [resources](#input\_resources) | API Gateway Resources | `map(any)` | n/a | yes |
 | <a name="input_role_name"></a> [role\_name](#input\_role\_name) | role\_name | `string` | n/a | yes |
 | <a name="input_roots"></a> [roots](#input\_roots) | list of roots | `list(string)` | n/a | yes |
 | <a name="input_services"></a> [services](#input\_services) | list of services to assume | `list` | n/a | yes |

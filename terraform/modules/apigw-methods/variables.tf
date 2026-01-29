@@ -1,17 +1,12 @@
-# variable "APIResourceID" {
-#     description = "API resource id"
-#     type        = string
-# }
+variable "APIResourceID" {
+    description = "API Resource ID for the resource"
+    type        = string
+}
 
-# variable "APIParentID" {
-#     description = "API root resource id"
-#     type        = string
-# }
-
-# variable "APIPathPart" {
-#     description = "API path for the resource"
-#     type        = string
-# }
+variable "APIResourceRestAPIID" {
+    description = "API Rest API ID for the resource"
+    type = string
+}
 
 variable "APIHTTPMethod" {
     description = "HTTP method for the resource"
