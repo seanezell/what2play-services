@@ -71,11 +71,6 @@ jobs:
         with:
           terraform_version: ${{ env.TF_VERSION }}
 
-      # - name: Terraform Format Check
-      #   id: fmt
-      #   run: terraform fmt -check
-      #   continue-on-error: true
-
       - name: Terraform Init
         id: init
         run: terraform init

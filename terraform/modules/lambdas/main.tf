@@ -10,7 +10,6 @@ resource "aws_lambda_function" "lambdas" {
     function_name    = var.lambda_name
     role             = var.lambda_role_arn
     handler          = "index.handler"
-    #layers           = lookup(local.lambda_layers, each.key, [])
     source_code_hash = data.archive_file.zip_lambdas.output_base64sha256
     timeout          = var.lambda_timeout
     runtime          = var.lambda_runtime

@@ -2,6 +2,7 @@
 .terraform
 .terraform.lock.hcl
 zip/
+copilot-instructions.md
 
 # Logs
 logs

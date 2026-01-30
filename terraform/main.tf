@@ -174,27 +174,6 @@ module "apigw_methods" {
     authorizer_id = module.apigw.cognito_authorizer_id
 }
 
-# module "apigw_endpoints" {
-#     for_each = var.endpoints
-#     source = "./modules/endpoints"
-#     APIResourceID = module.apigw.apigw_id
-#     APIParentID = each.value.root != "root" ? aws_api_gateway_resource.roots[each.value.root].id : module.apigw.apigw_root_resource_id
-#     APIPathPart              = each.value.path
-#     APIHTTPMethod            = each.value.method
-#     APIIntegrationHTTPMethod = each.value.integration_method
-#     APIRequestModels         = each.value.request_schema != "" ? { "application/json" = aws_api_gateway_model.request_models["${each.key}"].name } : null
-#     StatusCode               = "200" 
-#     APIIntegrationURI = each.value.uri_type != "uri" ? module.lambdas["${each.value.uri}"].invoke_arn : each.value.uri
-#     APIIntegrationType = each.value.type
-#     APIIntegrationRole = module.roles_n_policies.output_roleid
-#     APIRequestTemplates  = each.value.request_mapping != "" ? { "application/json" = file("${path.module}/mapping-templates/${each.value.request_mapping}.vtl") } : null
-#     APIResponseTemplates = each.value.response_mapping != "" ? { "application/json" = file("${path.module}/mapping-templates/${each.value.response_mapping}.vtl") } : null
-#     APIMethodRequestParameters      = each.value.method != "POST" ? each.value.methodReqParams : {}
-#     APIIntegrationRequestParameters = each.value.method != "POST" ? each.value.integrationReqParams : {}
-#     validator = each.value.validator == "body_validator" ? module.apigw.apigw_validator_body_id : module.apigw.apigw_validator_querystring_id
-#     authorizer_id = module.apigw.cognito_authorizer_id
-# }
-
 resource "aws_api_gateway_model" "request_models" {
     for_each     = { for k, v in var.methods : k => v if v.model != "" }
     rest_api_id  = module.apigw.apigw_id
