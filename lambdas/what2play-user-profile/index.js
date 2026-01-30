@@ -1,6 +1,12 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
 const { DynamoDBDocumentClient, GetCommand, PutCommand, QueryCommand, DeleteCommand } = require('@aws-sdk/lib-dynamodb');
 
+const leoProfanity = require('leo-profanity');
+
+// Load default dictionary once at cold-start. You can call
+// `leoProfanity.add([...])` to add project-specific denied words.
+leoProfanity.loadDictionary();
+
 const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient());
 
 exports.handler = async (event) => {
@@ -208,14 +214,29 @@ function isValidUsername(username) {
     return regex.test(username);
 }
 
+// Normalize username for more robust checking: lowercase, remove diacritics,
+// simple leet substitutions, strip non-alphanumerics, collapse repeated chars.
+function normalizeUsername(name) {
+    const leetMap = { '0':'o','1':'i','3':'e','4':'a','5':'s','7':'t' };
+        let s = String(name || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '');
+    s = s.split('').map(ch => leetMap[ch] || ch).join('');
+    s = s.replace(/[^a-z0-9]/g, '');
+    s = s.replace(/(.)\1{2,}/g, '$1$1');
+    return s;
+}
+
+// Project-specific deny words (reserved words, admin labels, etc.)
+const customDeny = ['admin', 'api', 'root', 'system', 'null', 'undefined'];
+// Add custom deny words to leo-profanity dictionary so `check` picks them up.
+    leoProfanity.add(customDeny);
+
 function containsProfanity(username) {
-    const profanityList = [
-        'admin', 'api', 'root', 'system', 'null', 'undefined',
-        // Add more as needed
-    ];
-    
-    const lowerUsername = username.toLowerCase();
-    return profanityList.some(word => lowerUsername.includes(word));
+    const n = normalizeUsername(username);
+    if (!n) return false;
+    // Check via leo-profanity (covers many obscene terms) and explicit substring checks
+    const profane = leoProfanity.check(n);
+    const containsReserved = customDeny.some(w => n.includes(w));
+    return profane || containsReserved;
 }
 
 async function generateUsernameSuggestions(baseUsername) {

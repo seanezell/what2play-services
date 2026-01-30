@@ -1,0 +1,12 @@
+{
+  "name": "what2play-user-profile",
+  "version": "1.0.0",
+  "description": "Lambda for user profile management",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "leo-profanity": "^1.5.0",
+    "@aws-sdk/client-dynamodb": "*",
+    "@aws-sdk/lib-dynamodb": "*"
+  }
+}
