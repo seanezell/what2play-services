@@ -1,0 +1,10 @@
+{
+  "name": "what2play-friends-list",
+  "version": "1.0.0",
+  "description": "List friends for What2Play user",
+  "main": "index.js",
+  "dependencies": {},
+  "engines": {
+    "node": ">=18"
+  }
+}

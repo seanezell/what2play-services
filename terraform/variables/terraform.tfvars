@@ -16,6 +16,7 @@ roots = [
     "user",
     "usernames",
     "groups",
+    "friends"
 ]
 
 lambdas = {
@@ -46,6 +47,13 @@ lambdas = {
         "memory_size": 512,
         "log_retention": 14,
         "description": "Handle user profile operations"
+    },
+    "what2play-friends-list": {
+        "runtime": "nodejs22.x",
+        "timeout": 30,
+        "memory_size": 512,
+        "log_retention": 14,
+        "description": "list my friends"
     }
 }
 
@@ -69,6 +77,10 @@ resources = {
     "username-validation": {
         "root": "usernames",
         "path": "validate"
+    },
+    "friends-list": {
+        "root": "friends",
+        "path": "list"
     }
 }
 
@@ -177,5 +189,20 @@ methods = {
         "methodReqParams" : {},
         "integrationReqParams" : {},
         "validator" : "body_validator"
+    },
+    "friends-list": {
+        "resource": "friends-list",
+        "uri_type": "lambda",
+        "uri": "what2play-friends-list",
+        "method": "GET",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-friends-list-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {},
+        "integrationReqParams" : {},
+        "validator" : "querystring_validator"
     }
 }
