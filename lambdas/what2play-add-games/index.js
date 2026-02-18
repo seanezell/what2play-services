@@ -1,9 +1,15 @@
 const { DynamoDBClient } = require('@aws-sdk/client-dynamodb');
-const { DynamoDBDocumentClient, QueryCommand, ScanCommand, PutCommand } = require('@aws-sdk/lib-dynamodb');
+const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
 const { LambdaClient, InvokeCommand } = require('@aws-sdk/client-lambda');
 
 const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient());
 const lambdaClient = new LambdaClient();
+
+const { createGame } = require('./data/addGame');
+const { linkGameToUser } = require('./data/linkGameToUser');
+const { queryGameByName } = require('./data/queryGameByName');
+const { scanAllGames } = require('./data/scanAllGames');
+const { normalizeGameName, calculateSimilarity } = require('./lib/gameMatching');
 
 exports.handler = async (event) => {
     try {
@@ -71,133 +77,29 @@ exports.handler = async (event) => {
     }
 };
 
-async function findExistingGame(gameName) {
-    // Try exact match first
-    const exactParams = {
-        TableName: 'what2play',
-        KeyConditionExpression: 'PK = :pk AND SK = :sk',
-        ExpressionAttributeValues: {
-            ':pk': `GAME#${normalizeGameName(gameName)}`,
-            ':sk': 'METADATA'
-        }
-    };
+const findExistingGame = async (gameName) => {
+    const normalizedName = normalizeGameName(gameName);
     
-    const exactResult = await dynamoClient.send(new QueryCommand(exactParams));
-    if (exactResult.Items?.length > 0) {
-        return exactResult.Items[0];
+    // Try exact match first
+    const exactMatch = await queryGameByName(dynamoClient, normalizedName);
+    if (exactMatch) {
+        return exactMatch;
     }
     
     // If no exact match, scan for similar names
-    const scanParams = {
-        TableName: 'what2play',
-        FilterExpression: 'begins_with(PK, :prefix) AND SK = :sk',
-        ExpressionAttributeValues: {
-            ':prefix': 'GAME#',
-            ':sk': 'METADATA'
-        }
-    };
+    const allGames = await scanAllGames(dynamoClient);
     
-    const scanResult = await dynamoClient.send(new ScanCommand(scanParams));
-    const games = scanResult.Items || [];
-    
-    // Find similar game names
-    const normalizedSearch = normalizeGameName(gameName);
-    for (const game of games) {
+    for (const game of allGames) {
         const gameId = game.PK.replace('GAME#', '');
-        if (calculateSimilarity(gameId, normalizedSearch) > 0.85) {
+        if (calculateSimilarity(gameId, normalizedName) > 0.85) {
             return game;
         }
     }
     
     return null;
-}
+};
 
-function normalizeGameName(name) {
-    return name.toLowerCase()
-        .replace(/[^a-z0-9\s]/g, '') // Remove special characters
-        .replace(/\s+/g, '-') // Replace spaces with hyphens
-        .trim();
-}
-
-function calculateSimilarity(str1, str2) {
-    // Simple similarity calculation
-    const longer = str1.length > str2.length ? str1 : str2;
-    const shorter = str1.length > str2.length ? str2 : str1;
-    
-    if (longer.length === 0) return 1.0;
-    
-    const editDistance = levenshteinDistance(longer, shorter);
-    return (longer.length - editDistance) / longer.length;
-}
-
-function levenshteinDistance(str1, str2) {
-    const matrix = [];
-    
-    for (let i = 0; i <= str2.length; i++) {
-        matrix[i] = [i];
-    }
-    
-    for (let j = 0; j <= str1.length; j++) {
-        matrix[0][j] = j;
-    }
-    
-    for (let i = 1; i <= str2.length; i++) {
-        for (let j = 1; j <= str1.length; j++) {
-            if (str2.charAt(i - 1) === str1.charAt(j - 1)) {
-                matrix[i][j] = matrix[i - 1][j - 1];
-            } else {
-                matrix[i][j] = Math.min(
-                    matrix[i - 1][j - 1] + 1,
-                    matrix[i][j - 1] + 1,
-                    matrix[i - 1][j] + 1
-                );
-            }
-        }
-    }
-    
-    return matrix[str2.length][str1.length];
-}
-
-async function linkGameToUser(userId, gameId, platform, weight) {
-    const params = {
-        TableName: 'what2play',
-        Item: {
-            PK: `USER#${userId}`,
-            SK: `GAME#${gameId}`,
-            platform,
-            weight,
-            added_date: new Date().toISOString()
-        }
-    };
-    
-    await dynamoClient.send(new PutCommand(params));
-}
-
-async function createGame(gameDetails) {
-    const game_id = normalizeGameName(gameDetails.name);
-    
-    const params = {
-        TableName: 'what2play',
-        Item: {
-            PK: `GAME#${game_id}`,
-            SK: 'METADATA',
-            game_id: game_id,
-            name: gameDetails.name,
-            description: gameDetails.description,
-            steam_appid: gameDetails.steam_appid,
-            platforms: gameDetails.platforms || ['PC'],
-            genres: gameDetails.genres || [],
-            developer: gameDetails.developer,
-            publisher: gameDetails.publisher,
-            created_date: new Date().toISOString()
-        }
-    };
-    
-    await dynamoClient.send(new PutCommand(params));
-    return game_id;
-}
-
-async function invokeGameLookup(gameName, additionalDetails) {
+const invokeGameLookup = async (gameName, additionalDetails) => {
     const params = {
         FunctionName: 'what2play-game-lookup',
         Payload: JSON.stringify({ game_name: gameName, additional_details: additionalDetails })
@@ -205,4 +107,4 @@ async function invokeGameLookup(gameName, additionalDetails) {
     
     const result = await lambdaClient.send(new InvokeCommand(params));
     return JSON.parse(new TextDecoder().decode(result.Payload));
-}
+};
