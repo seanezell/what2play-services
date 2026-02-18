@@ -1,5 +1,5 @@
 const { PutCommand } = require('@aws-sdk/lib-dynamodb');
-const { normalizeGameName } = require('./lib/gameMatching');
+const { normalizeGameName } = require('../lib/gameMatching');
 
 exports.createGame = async (dynamoClient, gameDetails) => {
     const game_id = normalizeGameName(gameDetails.name);
