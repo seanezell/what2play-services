@@ -40,7 +40,7 @@ exports.handler = async (event) => {
         
         if (existingGame) {
             // Step 1a: Game exists, just link to user
-            await linkGameToUser(user_id, existingGame.game_id, platform, weight);
+            await linkGameToUser(dynamoClient, user_id, existingGame.game_id, platform, weight);
             return {
                 message: 'Game added to your collection',
                 game: existingGame 
@@ -52,8 +52,8 @@ exports.handler = async (event) => {
         
         if (gameDetails.confidence > 0.8) {
             // High confidence - auto-add
-            const game_id = await createGame(gameDetails);
-            await linkGameToUser(user_id, game_id, platform, weight);
+            const game_id = await createGame(dynamoClient, gameDetails);
+            await linkGameToUser(dynamoClient, user_id, game_id, platform, weight);
             
             return {
                 message: 'New game added to collection',
