@@ -16,7 +16,7 @@ exports.calculateSimilarity = (str1, str2) => {
     return (longer.length - editDistance) / longer.length;
 };
 
-exports.levenshteinDistance = (str1, str2) => {
+const levenshteinDistance = (str1, str2) => {
     const matrix = [];
     
     for (let i = 0; i <= str2.length; i++) {
