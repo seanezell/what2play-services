@@ -7,12 +7,17 @@ exports.containsProfanity = async (username) => {
     // Lazy load leo-profanity only when this function is called
     const leoProfanity = await require('leo-profanity');
 
-    leoProfanity.loadDictionary();
     const customDeny = ['admin', 'api', 'root', 'system', 'null', 'undefined'];
-    leoProfanity.add(customDeny);
+
+    if (!leoProfanity.loaded) {
+        leoProfanity.loadDictionary();
+        leoProfanity.add(customDeny);
+        leoProfanity.loaded = true;
+    }
 
     const n = normalizeUsername(username);
-    if (!n) return false;
+    if (!n) return false;   // Empty after normalization
+    
     // Check via leo-profanity (covers many obscene terms) and explicit substring checks
     const profane = leoProfanity.check(n);
     const containsReserved = customDeny.some(w => n.includes(w));

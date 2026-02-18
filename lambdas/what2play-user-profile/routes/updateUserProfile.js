@@ -2,6 +2,7 @@ const { DeleteCommand, PutCommand } = require('@aws-sdk/lib-dynamodb');
 
 const { isValidUsername, containsProfanity } = require('../lib/usernameValidation');
 const { loadUserProfile } = require('../data/loadUserProfile');
+const { validateUsername } = require('./validateUsername');
 
 exports.updateUserProfile = async (dynamoClient, userId, event) => {
     const { username, real_name, preferred_platform } = event;
