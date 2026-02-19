@@ -95,7 +95,8 @@ data "aws_iam_policy_document" "lambda_doc" {
             "dynamodb:DeleteItem",
             "dynamodb:UpdateItem",
             "dynamodb:Scan",
-            "dynamodb:Query"
+            "dynamodb:Query",
+            "dynamodb:BatchGetItem",
         ]
         resources = [
             "arn:aws:dynamodb:${data.aws_region.current.region}:${data.aws_caller_identity.current.id}:table/*"
