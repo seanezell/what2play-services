@@ -5,10 +5,7 @@ const { LambdaClient, InvokeCommand } = require('@aws-sdk/client-lambda');
 const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient());
 const lambdaClient = new LambdaClient();
 
-const { createGame } = require('./data/addGame');
-const { linkGameToUser } = require('./data/linkGameToUser');
-const { queryGameByName } = require('./data/queryGameByName');
-const { scanAllGames } = require('./data/scanAllGames');
+const { createGame, linkGameToUser, queryGameByName, scanAllGames } = require('./data');
 const { normalizeGameName, calculateSimilarity } = require('./lib/gameMatching');
 
 exports.handler = async (event) => {

@@ -3,7 +3,7 @@ const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
 
 const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient());
 
-const { getUserProfile, updateUserProfile, validateUsername } = require('./routes');
+const { listFriends, addFriend, removeFriend, searchUsers } = require('./routes');
 
 exports.handler = async (event) => {
     try {
@@ -17,22 +17,24 @@ exports.handler = async (event) => {
                 error: 'User not authenticated'
             };
         }
-        
+
         switch (httpMethod) {
             case 'GET':
-                return await getUserProfile(dynamoClient, user_id);
-            case 'PUT':
-                return await updateUserProfile(dynamoClient, user_id, event);
+                // Check path to determine which GET operation
+                if (event.path.includes('/search')) {
+                    return await searchUsers(dynamoClient, user_id, event.query);
+                } else {
+                    return await listFriends(dynamoClient, user_id);
+                }
             case 'POST':
-                return await validateUsername(dynamoClient, event.username);
+                return await addFriend(dynamoClient, user_id, event.friend_user_id);
+            case 'DELETE':
+                return await removeFriend(dynamoClient, user_id, event.friend_user_id);
             default:
-                return {
-                    statusCode: 405,
-                    error: 'Method not allowed'
-                };
+                return { statusCode: 405, error: 'Method not allowed' };
         }
-        
-    } catch (error) {
+    }
+    catch (error) {
         console.error('Lambda error:', error);
         return {
             statusCode: 500,

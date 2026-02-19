@@ -48,12 +48,12 @@ lambdas = {
         "log_retention": 14,
         "description": "Handle user profile operations"
     },
-    "what2play-friends-list": {
+    "what2play-friends": {
         "runtime": "nodejs22.x",
         "timeout": 30,
         "memory_size": 512,
         "log_retention": 14,
-        "description": "list my friends"
+        "description": "Handle friends list operations"
     }
 }
 
@@ -81,6 +81,14 @@ resources = {
     "friends-list": {
         "root": "friends",
         "path": "list"
+    },
+    "friends-search": {
+        "root": "friends",
+        "path": "search"
+    },
+    "friends-user_id": {
+        "root": "friends",
+        "path": "{friend_user_id}"
     }
 }
 
@@ -193,16 +201,61 @@ methods = {
     "friends-list": {
         "resource": "friends-list",
         "uri_type": "lambda",
-        "uri": "what2play-friends-list",
+        "uri": "what2play-friends",
         "method": "GET",
         "integration_method" : "POST",
         "type" : "AWS",
-        "request_mapping" : "what2play-friends-list-request",
+        "request_mapping" : "what2play-friends-request",
         "response_mapping" : "",
         "request_schema" : "",
         "model": "",
         "methodReqParams" : {},
         "integrationReqParams" : {},
+        "validator" : "querystring_validator"
+    },
+    "friends-search": {
+        "resource": "friends-search",
+        "uri_type": "lambda",
+        "uri": "what2play-friends",
+        "method": "GET",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-friends-search-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {"method.request.querystring.query": true},
+        "integrationReqParams" : {"integration.request.querystring.query": "method.request.querystring.query"},
+        "validator" : "querystring_validator"
+    },
+    "friends-add-friend": {
+        "resource": "friends-user_id",
+        "uri_type": "lambda",
+        "uri": "what2play-friends",
+        "method": "POST",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-friends-add-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {"method.request.path.friend_user_id": true},
+        "integrationReqParams" : {"integration.request.path.friend_user_id": "method.request.path.friend_user_id"},
+        "validator" : "querystring_validator"
+    },
+    "friends-remove-friend": {
+        "resource": "friends-user_id",
+        "uri_type": "lambda",
+        "uri": "what2play-friends",
+        "method": "DELETE",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-friends-remove-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {"method.request.path.friend_user_id": true},
+        "integrationReqParams" : {"integration.request.path.friend_user_id": "method.request.path.friend_user_id"},
         "validator" : "querystring_validator"
     }
 }

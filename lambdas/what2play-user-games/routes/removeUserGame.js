@@ -1,4 +1,4 @@
-const { deleteUserGame } = require('../data/deleteUserGame');
+const { deleteUserGame } = require('../data');
 
 exports.removeUserGame = async (dynamoClient, userId, gameId) => {
     if (!gameId) {
