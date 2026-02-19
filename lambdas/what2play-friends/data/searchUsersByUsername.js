@@ -1,16 +1,23 @@
-const { QueryCommand } = require('@aws-sdk/lib-dynamodb');
+const { ScanCommand } = require('@aws-sdk/lib-dynamodb');
 
 exports.searchUsersByUsername = async (dynamoClient, query) => {
     const params = {
         TableName: 'what2play',
-        IndexName: 'GSI1',
-        KeyConditionExpression: 'begins_with(GSI1PK, :pk)',
+        FilterExpression: 'begins_with(PK, :prefix) AND begins_with(SK, :sk)',
         ExpressionAttributeValues: {
-            ':pk': `USERNAME#${query.toLowerCase()}`
+            ':prefix': 'USERNAME#',
+            ':sk': 'USER#'
         },
-        Limit: 10
+        Limit: 50  // Get more results to filter client-side
     };
     
-    const result = await dynamoClient.send(new QueryCommand(params));
-    return result.Items || [];
+    const result = await dynamoClient.send(new ScanCommand(params));
+    const allUsernames = result.Items || [];
+    
+    // Filter for usernames that contain the query (case-insensitive)
+    const queryLower = query.toLowerCase();
+    return allUsernames.filter(item => {
+        const username = item.PK?.replace('USERNAME#', '').toLowerCase();
+        return username.includes(queryLower);
+    }).slice(0, 10);
 };
