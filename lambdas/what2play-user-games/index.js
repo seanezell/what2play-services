@@ -3,9 +3,7 @@ const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
 
 const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient());
 
-const { listUserGames } = require('./routes/listUserGames');
-const { removeUserGame } = require('./routes/removeUserGame');
-const { updateUserGame } = require('./routes/updateUserGame');
+const { listUserGames, removeUserGame, updateUserGame } = require('./routes');
 
 exports.handler = async (event) => {
     try {

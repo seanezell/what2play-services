@@ -1,4 +1,4 @@
-const { updateUserGame } = require('../data/updateUserGame');
+const { updateUserGame } = require('../data');
 
 exports.updateUserGame = async (dynamoClient, userId, gameId, platform, weight) => {
     if (!gameId) {

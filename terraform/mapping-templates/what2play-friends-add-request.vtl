@@ -1,0 +1,6 @@
+{
+    "httpMethod": "$context.httpMethod",
+    "user_id": "$context.authorizer.claims.sub",
+    "path": "$context.resourcePath",
+    "friend_user_id": "$input.params('friend_user_id')"
+}

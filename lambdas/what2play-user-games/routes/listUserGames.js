@@ -1,5 +1,4 @@
-const { getUserGames } = require('../data/getUserGames');
-const { getGameDetails } = require('../data/getGameDetails');
+const { getUserGames, getGameDetails } = require('../data');
 
 exports.listUserGames = async (dynamoClient, userId) => {
     const userGames = await getUserGames(dynamoClient, userId);
