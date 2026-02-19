@@ -19,7 +19,7 @@ exports.searchUsers = async (dynamoClient, userId, query) => {
     return {
         users: filteredResults.map(r => ({
             user_id: r.SK?.replace('USER#', ''),
-            username: r.GSI1PK?.replace('USERNAME#', '')
+            username: r.PK?.replace('USERNAME#', '')
         }))
     };
 };
