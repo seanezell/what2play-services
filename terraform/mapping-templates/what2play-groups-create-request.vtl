@@ -1,5 +1,5 @@
 {
-    "httpMethod": "$context.httpMethod",
+    "http_method": "$context.httpMethod",
     "user_id": "$context.authorizer.claims.sub",
     "path": "$context.resourcePath",
     #set($body = $util.parseJson($input.body))
