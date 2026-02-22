@@ -9,7 +9,7 @@ exports.handler = async (event) => {
     try {
         console.log('Event received:', JSON.stringify(event, null, 2));
         
-        const { user_id, http_method, game_id, platform, weight } = event;
+        const { user_id, httpMethod, game_id, platform, weight } = event;
         
         if (!user_id) {
             return {
@@ -18,7 +18,7 @@ exports.handler = async (event) => {
             };
         }
         
-        switch (http_method) {
+        switch (httpMethod) {
             case 'GET':
                 return await listUserGames(dynamoClient, user_id);
             case 'DELETE':
