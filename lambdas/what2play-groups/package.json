@@ -1,0 +1,10 @@
+{
+  "name": "what2play-groups",
+  "version": "1.0.0",
+  "description": "Group operations for What2Play",
+  "main": "index.js",
+  "dependencies": {},
+  "engines": {
+    "node": ">=18"
+  }
+}

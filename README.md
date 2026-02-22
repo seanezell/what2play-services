@@ -1,6 +1,13 @@
 # what2play-services
 microservices for What 2 Play
 
+## API Design Philosophy
+This API uses explicit action verbs in URLs (`/groups/create`) rather than 
+pure REST (`POST /groups`) for clarity and infrastructure optimization. 
+HTTP verbs still define operations, maintaining RESTful principles where 
+they provide value.
+
+
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
