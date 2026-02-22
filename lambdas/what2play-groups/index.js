@@ -9,7 +9,7 @@ exports.handler = async (event) => {
     try {
         console.log('Event received:', JSON.stringify(event, null, 2));
         
-        const { user_id, http_method, group_id, group_name, member_ids } = event;
+        const { user_id, httpMethod, group_id, group_name, member_ids } = event;
         
         if (!user_id) {
             return {
@@ -18,7 +18,7 @@ exports.handler = async (event) => {
             };
         }
         
-        switch (http_method) {
+        switch (httpMethod) {
             case 'POST':
                 if (event.path.includes('/create')) {
                     return await createGroup(dynamoClient, user_id, group_name, member_ids);
