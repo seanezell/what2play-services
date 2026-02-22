@@ -1,0 +1,22 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "group_name": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 50
+        },
+        "member_ids": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "pattern": "^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
+            },
+            "minItems": 1,
+            "maxItems": 10
+        }
+    },
+    "required": ["member_ids"],
+    "additionalProperties": false
+}

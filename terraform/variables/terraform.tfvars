@@ -53,7 +53,14 @@ lambdas = {
         "timeout": 30,
         "memory_size": 512,
         "log_retention": 14,
-        "description": "Handle friends list operations"
+        "description": "Handle friends operations"
+    },
+    "what2play-groups": {
+        "runtime": "nodejs22.x",
+        "timeout": 30,
+        "memory_size": 512,
+        "log_retention": 14,
+        "description": "Handle group operations"
     }
 }
 
@@ -89,6 +96,22 @@ resources = {
     "friends-user_id": {
         "root": "friends",
         "path": "{friend_user_id}"
+    },
+    "groups-create": {
+        "root": "groups",
+        "path": "create"
+    },
+    "groups-list": {
+        "root": "groups",
+        "path": "list"
+    },
+    "groups-group_id": {
+        "root": "groups",
+        "path": "{group_id}"
+    },
+    "groups-pick": {
+        "root": "groups",
+        "path": "pick"
     }
 }
 
@@ -257,5 +280,80 @@ methods = {
         "methodReqParams" : {"method.request.path.friend_user_id": true},
         "integrationReqParams" : {"integration.request.path.friend_user_id": "method.request.path.friend_user_id"},
         "validator" : "querystring_validator"
+    },
+    "groups-create": {
+        "resource": "groups-create",
+        "uri_type": "lambda",
+        "uri": "what2play-groups",
+        "method": "POST",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-groups-create-request",
+        "response_mapping" : "",
+        "request_schema" : "create_group",
+        "model": "createGroupModel",
+        "methodReqParams" : {},
+        "integrationReqParams" : {},
+        "validator" : "body_validator"
+    },
+    "groups-list": {
+        "resource": "groups-list",
+        "uri_type": "lambda",
+        "uri": "what2play-groups",
+        "method": "GET",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-groups-list-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {},
+        "integrationReqParams" : {},
+        "validator" : "querystring_validator"
+    },
+    "groups-get": {
+        "resource": "groups-group_id",
+        "uri_type": "lambda",
+        "uri": "what2play-groups",
+        "method": "GET",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-groups-id-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {"method.request.path.group_id": true},
+        "integrationReqParams" : {"integration.request.path.group_id": "method.request.path.group_id"},
+        "validator" : "querystring_validator"
+    },
+    "groups-delete": {
+        "resource": "groups-group_id",
+        "uri_type": "lambda",
+        "uri": "what2play-groups",
+        "method": "DELETE",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-groups-id-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {"method.request.path.group_id": true},
+        "integrationReqParams" : {"integration.request.path.group_id": "method.request.path.group_id"},
+        "validator" : "querystring_validator"
+    },
+    "groups-pick": {
+        "resource": "groups-pick",
+        "uri_type": "lambda",
+        "uri": "what2play-groups",
+        "method": "POST",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-groups-pick-request",
+        "response_mapping" : "",
+        "request_schema" : "pick_game",
+        "model": "pickGameModel",
+        "methodReqParams" : {},
+        "integrationReqParams" : {},
+        "validator" : "body_validator"
     }
 }

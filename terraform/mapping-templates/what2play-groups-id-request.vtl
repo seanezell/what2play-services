@@ -1,0 +1,6 @@
+{
+    "httpMethod": "$context.httpMethod",
+    "user_id": "$context.authorizer.claims.sub",
+    "path": "$context.resourcePath",
+    "group_id": "$input.params('group_id')"
+}
