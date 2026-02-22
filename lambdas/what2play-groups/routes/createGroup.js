@@ -19,12 +19,12 @@ exports.createGroup = async (dynamoClient, user_id, group_name, member_ids) => {
     const group = await createGroupRecord(dynamoClient, user_id, group_name, member_ids);
     
     return {
-        statusCode: 201,
-        body: JSON.stringify({
+        message: 'Group created successfully',
+        group: {
             group_id: group.group_id,
             group_name: group.group_name,
             members: group.members,
             created_date: group.created_date
-        })
+        }
     };
 };

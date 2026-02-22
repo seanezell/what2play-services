@@ -5,10 +5,7 @@ exports.deleteGroup = async (dynamoClient, user_id, group_id) => {
         await deleteGroupRecord(dynamoClient, user_id, group_id);
         
         return {
-            statusCode: 200,
-            body: JSON.stringify({
-                message: 'Group deleted successfully'
-            })
+            message: 'Group deleted successfully'
         };
     } catch (error) {
         if (error.name === 'ConditionalCheckFailedException') {

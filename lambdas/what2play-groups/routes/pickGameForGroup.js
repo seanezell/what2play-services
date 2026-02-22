@@ -45,10 +45,7 @@ exports.pickGameForGroup = async (dynamoClient, user_id, group_id) => {
     });
     
     return {
-        statusCode: 200,
-        body: JSON.stringify({
-            game_id: pickedGameId,
-            game_name: gameName
-        })
+        game_id: pickedGameId,
+        game_name: gameName
     };
 };
