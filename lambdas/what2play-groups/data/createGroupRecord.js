@@ -9,11 +9,12 @@ exports.createGroupRecord = async (dynamoClient, ownerId, groupName, memberIds) 
     const allMembers = [ownerId, ...memberIds].sort((a, b) => a.localeCompare(b));
     const memberHash = crypto.createHash('sha256').update(allMembers.join(',')).digest('hex');
     
-    // Get member profiles for usernames
+    // Get member profiles for usernames (including owner)
+    const allMemberIds = [ownerId, ...memberIds];
     const profileParams = {
         RequestItems: {
             'what2play': {
-                Keys: memberIds.map(id => ({ PK: `USER#${id}`, SK: 'PROFILE' }))
+                Keys: allMemberIds.map(id => ({ PK: `USER#${id}`, SK: 'PROFILE' }))
             }
         }
     };
@@ -21,7 +22,7 @@ exports.createGroupRecord = async (dynamoClient, ownerId, groupName, memberIds) 
     const profileResult = await dynamoClient.send(new BatchGetCommand(profileParams));
     const profiles = profileResult.Responses?.what2play || [];
     
-    const members = memberIds.map(id => {
+    const members = allMemberIds.map(id => {
         const profile = profiles.find(p => p.PK === `USER#${id}`);
         return {
             user_id: id,
