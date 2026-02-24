@@ -1,2 +1,4 @@
-#set($inputRoot = $input.path('$'))
-$input.json('$.errorMessage')
+#set($errorMessage = $util.parseJson($input.path('$.errorMessage')))
+{
+  "error": "$errorMessage.error"
+}
