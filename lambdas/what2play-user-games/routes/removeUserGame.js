@@ -1,11 +1,15 @@
 const { deleteUserGame } = require('../data');
 
+class HttpError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
 exports.removeUserGame = async (dynamoClient, userId, gameId) => {
     if (!gameId) {
-        return {
-            statusCode: 400,
-            error: 'game_id is required'
-        };
+        throw new HttpError(400, 'game_id is required');
     }
     
     await deleteUserGame(dynamoClient, userId, gameId);

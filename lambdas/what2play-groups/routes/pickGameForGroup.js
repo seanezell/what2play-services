@@ -2,14 +2,18 @@ const { getGroupById, getUserGames, updateGroupPickHistory } = require('../data'
 const { pickGameForGroup: pickAlgorithm } = require('../lib/pickAlgorithm');
 const { GetCommand } = require('@aws-sdk/lib-dynamodb');
 
+class HttpError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
 exports.pickGameForGroup = async (dynamoClient, user_id, group_id) => {
     const group = await getGroupById(dynamoClient, user_id, group_id);
     
     if (!group) {
-        return {
-            statusCode: 404,
-            error: 'Group not found'
-        };
+        throw new HttpError(404, 'Group not found');
     }
     
     // Get games for all members including owner
@@ -20,10 +24,7 @@ exports.pickGameForGroup = async (dynamoClient, user_id, group_id) => {
     const pickedGameId = pickAlgorithm(gamesByUser, group.pick_history);
     
     if (!pickedGameId) {
-        return {
-            statusCode: 404,
-            error: 'No common games found among all members'
-        };
+        throw new HttpError(404, 'No common games found among all members');
     }
     
     // Get game metadata

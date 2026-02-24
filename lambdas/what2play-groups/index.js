@@ -5,6 +5,13 @@ const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient());
 
 const { createGroup, listGroups, getGroupDetails, deleteGroup, pickGameForGroup } = require('./routes');
 
+class HttpError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
 exports.handler = async (event) => {
     try {
         console.log('Event received:', JSON.stringify(event, null, 2));
@@ -12,10 +19,7 @@ exports.handler = async (event) => {
         const { user_id, httpMethod, group_id, group_name, member_ids } = event;
         
         if (!user_id) {
-            return {
-                statusCode: 401,
-                error: 'User not authenticated'
-            };
+            throw new HttpError(401, 'User not authenticated');
         }
         
         switch (httpMethod) {
@@ -34,17 +38,13 @@ exports.handler = async (event) => {
             case 'DELETE':
                 return await deleteGroup(dynamoClient, user_id, group_id);
             default:
-                return {
-                    statusCode: 405,
-                    error: 'Method not allowed'
-                };
+                throw new HttpError(405, 'Method not allowed');
         }
         
     } catch (error) {
         console.error('Lambda error:', error);
-        return {
-            statusCode: 500,
-            error: error.message
-        };
+        const statusCode = error.statusCode || 500;
+        const message = error.message || 'Internal server error';
+        throw JSON.stringify({ statusCode, error: message });
     }
 };

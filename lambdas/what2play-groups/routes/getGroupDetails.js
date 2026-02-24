@@ -1,13 +1,17 @@
 const { getGroupById } = require('../data');
 
+class HttpError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
 exports.getGroupDetails = async (dynamoClient, user_id, group_id) => {
     const group = await getGroupById(dynamoClient, user_id, group_id);
     
     if (!group) {
-        return {
-            statusCode: 404,
-            error: 'Group not found'
-        };
+        throw new HttpError(404, 'Group not found');
     }
     
     return {

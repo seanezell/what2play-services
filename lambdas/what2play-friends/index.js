@@ -5,6 +5,13 @@ const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient());
 
 const { listFriends, addFriend, removeFriend, searchUsers } = require('./routes');
 
+class HttpError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
 exports.handler = async (event) => {
     try {
         console.log('Event received:', JSON.stringify(event, null, 2));
@@ -12,15 +19,11 @@ exports.handler = async (event) => {
         const { httpMethod, user_id } = event;
         
         if (!user_id) {
-            return {
-                statusCode: 401,
-                error: 'User not authenticated'
-            };
+            throw new HttpError(401, 'User not authenticated');
         }
 
         switch (httpMethod) {
             case 'GET':
-                // Check path to determine which GET operation
                 if (event.path.includes('/search')) {
                     return await searchUsers(dynamoClient, user_id, event.query);
                 } else {
@@ -31,14 +34,13 @@ exports.handler = async (event) => {
             case 'DELETE':
                 return await removeFriend(dynamoClient, user_id, event.friend_user_id);
             default:
-                return { statusCode: 405, error: 'Method not allowed' };
+                throw new HttpError(405, 'Method not allowed');
         }
     }
     catch (error) {
         console.error('Lambda error:', error);
-        return {
-            statusCode: 500,
-            error: error.message
-        };
+        const statusCode = error.statusCode || 500;
+        const message = error.message || 'Internal server error';
+        throw JSON.stringify({ statusCode, error: message });
     }
 };

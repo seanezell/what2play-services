@@ -1,12 +1,15 @@
 const { removeFriendship } = require('../data/removeFriendship');
 
+class HttpError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
 exports.removeFriend = async (dynamoClient, userId, friendUserId) => {
-    // Validate friend_user_id
     if (!friendUserId) {
-        return {
-            statusCode: 400,
-            error: 'friend_user_id is required'
-        };
+        throw new HttpError(400, 'friend_user_id is required');
     }
     
     await removeFriendship(dynamoClient, userId, friendUserId);
