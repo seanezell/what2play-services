@@ -9,7 +9,7 @@ exports.calculateSimilarity = (str1, str2) => {
     const longer = str1.length > str2.length ? str1 : str2;
     const shorter = str1.length > str2.length ? str2 : str1;
     
-    if (longer.length === 0) return 1.0;
+    if (longer.length === 0) return 1;
     
     // If one string is a prefix of the other, penalize based on extra content
     if (longer.startsWith(shorter)) {

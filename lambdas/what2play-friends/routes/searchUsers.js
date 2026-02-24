@@ -1,12 +1,16 @@
 const { searchUsersByUsername } = require('../data/searchUsersByUsername');
 const { queryUserFriends } = require('../data/queryUserFriends');
 
+class HttpError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
 exports.searchUsers = async (dynamoClient, userId, query) => {
     if (!query || query.length < 2) {
-        return {
-            statusCode: 400,
-            error: 'Query must be at least 2 characters'
-        };
+        throw new HttpError(400, 'Query must be at least 2 characters');
     }
     
     // Get search results and current friends list

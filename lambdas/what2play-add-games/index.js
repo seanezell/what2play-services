@@ -8,26 +8,25 @@ const lambdaClient = new LambdaClient();
 const { createGame, linkGameToUser, queryGameByName, scanAllGames } = require('./data');
 const { normalizeGameName, calculateSimilarity } = require('./lib/gameMatching');
 
+class HttpError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
+
 exports.handler = async (event) => {
     try {
         console.log('Event received:', JSON.stringify(event, null, 2));
         
-        // With AWS integration type, the body is already parsed and passed directly
         const { game_name, platform, weight = 5, additional_details, user_id } = event;
         
-        // Validate required fields
         if (!game_name || !platform) {
-            return {
-                statusCode: 400,
-                body: JSON.stringify({ error: 'game_name and platform are required' })
-            };
+            throw new HttpError(400, 'game_name and platform are required');
         }
         
         if (!user_id) {
-            return {
-                statusCode: 401,
-                error: 'User not authenticated'
-            };
+            throw new HttpError(401, 'User not authenticated');
         }
         
         console.log(`Processing game: ${game_name} for user: ${user_id}`);
@@ -67,10 +66,9 @@ exports.handler = async (event) => {
         
     } catch (error) {
         console.error('Lambda error:', error);
-        return {
-            statusCode: 500,
-            error: error.message
-        };
+        const statusCode = error.statusCode || 500;
+        const message = error.message || 'Internal server error';
+        throw JSON.stringify({ statusCode, error: message });
     }
 };
 

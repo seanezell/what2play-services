@@ -223,6 +223,19 @@ module "response_403" {
     APIIntegrationAllowedOrigin     = "'*'"
 }
 
+module "response_409" {
+    for_each = var.methods
+    source = "./modules/responses"
+    depends_on                      = [module.apigw_methods]
+    APIParentID                     = module.apigw.apigw_id
+    APIResourceID                   = module.apigw_resources["${each.value.resource}"].output_apigw_resource_id
+    APIHTTPMethod                   = each.value.method
+    StatusCode                      = "409"
+    SelectionPattern                = ".*statusCode.*409.*"
+    APIIntegrationResponseTemplates = { "application/json" = file("${path.module}/mapping-templates/responses-errors.vtl") }
+    APIIntegrationAllowedOrigin     = "'*'"
+}
+
 module "response_500" {
     for_each = var.methods
     source = "./modules/responses"

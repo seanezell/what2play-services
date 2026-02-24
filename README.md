@@ -30,6 +30,7 @@ No requirements.
 | <a name="module_response_400"></a> [response\_400](#module\_response\_400) | ./modules/responses | n/a |
 | <a name="module_response_401"></a> [response\_401](#module\_response\_401) | ./modules/responses | n/a |
 | <a name="module_response_403"></a> [response\_403](#module\_response\_403) | ./modules/responses | n/a |
+| <a name="module_response_409"></a> [response\_409](#module\_response\_409) | ./modules/responses | n/a |
 | <a name="module_response_500"></a> [response\_500](#module\_response\_500) | ./modules/responses | n/a |
 | <a name="module_roles_n_policies"></a> [roles\_n\_policies](#module\_roles\_n\_policies) | ./modules/iam | n/a |
 
