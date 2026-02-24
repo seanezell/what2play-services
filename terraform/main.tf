@@ -223,6 +223,19 @@ module "response_403" {
     APIIntegrationAllowedOrigin     = "'*'"
 }
 
+module "response_404" {
+    for_each = var.methods
+    source = "./modules/responses"
+    depends_on                      = [module.apigw_methods]
+    APIParentID                     = module.apigw.apigw_id
+    APIResourceID                   = module.apigw_resources["${each.value.resource}"].output_apigw_resource_id
+    APIHTTPMethod                   = each.value.method
+    StatusCode                      = "404"
+    SelectionPattern                = ".*statusCode.*404.*"
+    APIIntegrationResponseTemplates = { "application/json" = file("${path.module}/mapping-templates/responses-errors.vtl") }
+    APIIntegrationAllowedOrigin     = "'*'"
+}
+
 module "response_409" {
     for_each = var.methods
     source = "./modules/responses"
@@ -250,7 +263,7 @@ module "response_500" {
 }
 
 resource "aws_api_gateway_deployment" "apigw-deployment" {
-    depends_on  = [module.apigw_resources, module.apigw_methods, module.response_400, module.response_401, module.response_403, module.response_500]
+    depends_on  = [module.apigw_resources, module.apigw_methods, module.response_400, module.response_401, module.response_403, module.response_404, module.response_409, module.response_500]
     rest_api_id = module.apigw.apigw_id
     description = "Deployed on ${timestamp()}"
 

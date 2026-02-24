@@ -3,7 +3,7 @@ const { pickGameForGroup: pickAlgorithm } = require('../lib/pickAlgorithm');
 const { GetCommand } = require('@aws-sdk/lib-dynamodb');
 
 class HttpError extends Error {
-    constructor(statusCode, message) {
+    constructor(statusCode, message, data = {}) {
         super(message);
         this.statusCode = statusCode;
         this.data = data;
@@ -38,7 +38,7 @@ exports.pickGameForGroup = async (dynamoClient, user_id, group_id) => {
     };
     
     const gameResult = await dynamoClient.send(new GetCommand(gameParams));
-    const gameName = gameResult.Item?.game_name || 'Unknown Game';
+    const gameName = gameResult.Item?.name || 'Unknown Game';
     
     // Update pick history
     await updateGroupPickHistory(dynamoClient, user_id, group_id, {
