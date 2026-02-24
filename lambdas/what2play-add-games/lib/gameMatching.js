@@ -6,11 +6,19 @@ exports.normalizeGameName = (name) => {
 };
 
 exports.calculateSimilarity = (str1, str2) => {
-    // Simple similarity calculation
     const longer = str1.length > str2.length ? str1 : str2;
     const shorter = str1.length > str2.length ? str2 : str1;
     
     if (longer.length === 0) return 1.0;
+    
+    // If one string is a prefix of the other, penalize based on extra content
+    if (longer.startsWith(shorter)) {
+        const extraContent = longer.substring(shorter.length).trim();
+        // If there's significant extra content (not just punctuation), lower the score
+        if (extraContent.length > 2) {
+            return 0.7; // Below the 0.85 threshold
+        }
+    }
     
     const editDistance = levenshteinDistance(longer, shorter);
     return (longer.length - editDistance) / longer.length;
