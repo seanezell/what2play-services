@@ -5,5 +5,5 @@ output "invoke_arn" {
 
 output "source_code_hash" {
     description = "Lambda function source code hash for deployment triggers"
-    value       = data.archive_file.zip_lambdas.output_base64sha256
+    value       = aws_lambda_function.lambdas.source_code_hash
 }
