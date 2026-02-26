@@ -1,6 +1,6 @@
 const { PutCommand } = require('@aws-sdk/lib-dynamodb');
 
-exports.linkGameToUser = async (dynamoClient, userId, gameId, platform, weight) => {
+exports.linkGameToUser = async (dynamoClient, userId, gameId, platform, weight, visibility = 'friends') => {
     const params = {
         TableName: 'what2play',
         Item: {
@@ -8,6 +8,7 @@ exports.linkGameToUser = async (dynamoClient, userId, gameId, platform, weight) 
             SK: `GAME#${gameId}`,
             platform,
             weight,
+            visibility,
             added_date: new Date().toISOString()
         }
     };

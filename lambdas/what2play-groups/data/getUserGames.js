@@ -14,7 +14,10 @@ exports.getUserGames = async (dynamoClient, userIds) => {
         };
         
         const result = await dynamoClient.send(new QueryCommand(params));
-        gamesByUser[userId] = (result.Items || []).map(item => item.SK.replace('GAME#', ''));
+        gamesByUser[userId] = (result.Items || []).map(item => ({
+            game_id: item.SK.replace('GAME#', ''),
+            weight: item.weight || 5
+        }));
     }
     
     return gamesByUser;

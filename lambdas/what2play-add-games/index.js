@@ -19,7 +19,7 @@ exports.handler = async (event) => {
     try {
         console.log('Event received:', JSON.stringify(event, null, 2));
         
-        const { game_name, platform, weight = 5, additional_details, user_id } = event;
+        const { game_name, platform, weight = 5, visibility = 'friends', additional_details, user_id } = event;
         
         if (!game_name || !platform) {
             throw new HttpError(400, 'game_name and platform are required');
@@ -36,7 +36,7 @@ exports.handler = async (event) => {
         
         if (existingGame) {
             // Step 1a: Game exists, just link to user
-            await linkGameToUser(dynamoClient, user_id, existingGame.game_id, platform, weight);
+            await linkGameToUser(dynamoClient, user_id, existingGame.game_id, platform, weight, visibility);
             return {
                 message: 'Game added to your collection',
                 game: existingGame 
@@ -49,7 +49,7 @@ exports.handler = async (event) => {
         if (gameDetails.confidence > 0.8) {
             // High confidence - auto-add
             const game_id = await createGame(dynamoClient, gameDetails);
-            await linkGameToUser(dynamoClient, user_id, game_id, platform, weight);
+            await linkGameToUser(dynamoClient, user_id, game_id, platform, weight, visibility);
             
             return {
                 message: 'New game added to collection',
