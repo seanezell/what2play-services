@@ -17,6 +17,10 @@
             "minimum": 1,
             "maximum": 10
         },
+        "visibility": {
+            "type": "string",
+            "enum": ["public", "friends", "private"]
+        },
         "additional_details": {
             "type": "string",
             "maxLength": 500

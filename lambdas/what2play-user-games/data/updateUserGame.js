@@ -1,6 +1,6 @@
 const { UpdateCommand } = require('@aws-sdk/lib-dynamodb');
 
-exports.updateUserGame = async (dynamoClient, userId, gameId, platform, weight) => {
+exports.updateUserGame = async (dynamoClient, userId, gameId, platform, weight, visibility) => {
     const updateExpression = [];
     const expressionAttributeValues = {};
     
@@ -14,10 +14,15 @@ exports.updateUserGame = async (dynamoClient, userId, gameId, platform, weight) 
         expressionAttributeValues[':weight'] = weight;
     }
     
+    if (visibility) {
+        updateExpression.push('visibility = :visibility');
+        expressionAttributeValues[':visibility'] = visibility;
+    }
+    
     if (updateExpression.length === 0) {
         return {
             statusCode: 400,
-            error: 'At least one field (platform or weight) must be provided'
+            error: 'At least one field (platform, weight, or visibility) must be provided'
         };
     }
 

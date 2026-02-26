@@ -16,7 +16,7 @@ exports.handler = async (event) => {
     try {
         console.log('Event received:', JSON.stringify(event, null, 2));
         
-        const { user_id, httpMethod, game_id, platform, weight } = event;
+        const { user_id, httpMethod, game_id, platform, weight, visibility } = event;
         
         if (!user_id) {
             throw new HttpError(401, 'User not authenticated');
@@ -28,7 +28,7 @@ exports.handler = async (event) => {
             case 'DELETE':
                 return await removeUserGame(dynamoClient, user_id, game_id);
             case 'PUT':
-                return await updateUserGame(dynamoClient, user_id, game_id, platform, weight);
+                return await updateUserGame(dynamoClient, user_id, game_id, platform, weight, visibility);
             default:
                 throw new HttpError(405, 'Method not allowed');
         }

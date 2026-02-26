@@ -7,12 +7,12 @@ class HttpError extends Error {
     }
 }
 
-exports.updateUserGame = async (dynamoClient, userId, gameId, platform, weight) => {
+exports.updateUserGame = async (dynamoClient, userId, gameId, platform, weight, visibility) => {
     if (!gameId) {
         throw new HttpError(400, 'game_id is required');
     }
     
-    const result = await updateUserGame(dynamoClient, userId, gameId, platform, weight);
+    const result = await updateUserGame(dynamoClient, userId, gameId, platform, weight, visibility);
     
     return {
         message: 'Game updated successfully',
