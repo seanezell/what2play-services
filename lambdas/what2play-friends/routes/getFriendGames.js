@@ -1,5 +1,5 @@
 const { queryUserFriends } = require('../data/queryUserFriends');
-const { getFriendGames } = require('../data/getFriendGames');
+const { getFriendGames } = require('../data/queryFriendGames');
 
 class HttpError extends Error {
     constructor(statusCode, message) {
@@ -22,8 +22,9 @@ exports.getFriendGames = async (dynamoClient, userId, friendUserId) => {
     
     // Filter by visibility
     const filteredGames = games.filter(game => {
-        if (game.visibility === 'public') return true;
-        if (game.visibility === 'friends' && isFriend) return true;
+        const visibility = game.visibility || 'friends';
+        if (visibility === 'public') return true;
+        if (visibility === 'friends' && isFriend) return true;
         return false;
     });
     
@@ -32,7 +33,7 @@ exports.getFriendGames = async (dynamoClient, userId, friendUserId) => {
             game_id: g.SK.replace('GAME#', ''),
             platform: g.platform,
             weight: g.weight,
-            visibility: g.visibility,
+            visibility: g.visibility || 'friends',
             added_date: g.added_date
         }))
     };

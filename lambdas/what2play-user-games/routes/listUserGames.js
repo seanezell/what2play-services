@@ -16,7 +16,8 @@ exports.listUserGames = async (dynamoClient, userId) => {
                 weight: userGame.weight,
                 added_date: userGame.added_date,
                 steam_appid: gameDetails?.steam_appid,
-                genres: gameDetails?.genres || []
+                genres: gameDetails?.genres || [],
+                visibility: userGame.visibility
             };
         })
     );
