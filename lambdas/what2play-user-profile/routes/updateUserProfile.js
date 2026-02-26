@@ -40,11 +40,11 @@ exports.updateUserProfile = async (dynamoClient, userId, event) => {
         };
     }
     
-    const oldUsername = currentProfile.profile.username;
+    const oldUsername = currentProfile.username;
     
     // Check if username changed and if new username is available
     if (username.toLowerCase() !== oldUsername.toLowerCase()) {
-        const usernameCheck = await validateUsername(username);
+        const usernameCheck = await validateUsername(dynamoClient, username);
         if (!usernameCheck.available) {
             return {
                 statusCode: 409,
@@ -54,7 +54,7 @@ exports.updateUserProfile = async (dynamoClient, userId, event) => {
         }
         
         // Update username index
-        await updateUsernameIndex(userId, oldUsername, username);
+        await updateUsernameIndex(dynamoClient, userId, oldUsername, username);
     }
     
     // Update profile
@@ -62,10 +62,10 @@ exports.updateUserProfile = async (dynamoClient, userId, event) => {
     const params = {
         TableName: 'what2play',
         Item: {
-            ...currentProfile.profile,
+            ...currentProfile,
             username: username,
-            real_name: real_name || currentProfile.profile.real_name,
-            preferred_platform: preferred_platform || currentProfile.profile.preferred_platform,
+            real_name: real_name || currentProfile.real_name,
+            preferred_platform: preferred_platform || currentProfile.preferred_platform,
             profile_complete: true,
             updated_date: now
         }
@@ -79,7 +79,7 @@ exports.updateUserProfile = async (dynamoClient, userId, event) => {
     };
 };
 
-const updateUsernameIndex = async (userId, oldUsername, newUsername) => {
+const updateUsernameIndex = async (dynamoClient, userId, oldUsername, newUsername) => {
     // Delete old username record
     const deleteParams = {
         TableName: 'what2play',
