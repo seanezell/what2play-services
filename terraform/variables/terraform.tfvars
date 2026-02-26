@@ -97,6 +97,10 @@ resources = {
         "root": "friends",
         "path": "{friend_user_id}"
     },
+    "friends-games": {
+        "root": "friends",
+        "path": "games"
+    },
     "groups-create": {
         "root": "groups",
         "path": "create"
@@ -279,6 +283,21 @@ methods = {
         "model": "",
         "methodReqParams" : {"method.request.path.friend_user_id": true},
         "integrationReqParams" : {"integration.request.path.friend_user_id": "method.request.path.friend_user_id"},
+        "validator" : "querystring_validator"
+    },
+    "friends-get-games": {
+        "resource": "friends-games",
+        "uri_type": "lambda",
+        "uri": "what2play-friends",
+        "method": "GET",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-friends-games-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {"method.request.querystring.user_id": true},
+        "integrationReqParams" : {"integration.request.querystring.user_id": "method.request.querystring.user_id"},
         "validator" : "querystring_validator"
     },
     "groups-create": {
