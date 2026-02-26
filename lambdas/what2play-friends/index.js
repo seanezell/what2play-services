@@ -3,7 +3,7 @@ const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
 
 const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient());
 
-const { listFriends, addFriend, removeFriend, searchUsers } = require('./routes');
+const { listFriends, addFriend, removeFriend, searchUsers, getFriendGames } = require('./routes');
 
 class HttpError extends Error {
     constructor(statusCode, message) {
@@ -26,6 +26,8 @@ exports.handler = async (event) => {
             case 'GET':
                 if (event.path.includes('/search')) {
                     return await searchUsers(dynamoClient, user_id, event.query);
+                } else if (event.path.includes('/games')) {
+                    return await getFriendGames(dynamoClient, user_id, event.friend_user_id);
                 } else {
                     return await listFriends(dynamoClient, user_id);
                 }
