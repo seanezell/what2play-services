@@ -1,0 +1,15 @@
+{
+  "name": "what2play-lists",
+  "version": "1.0.0",
+  "description": "Handle calls to What2Play get top and recent picked games lists",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "what2play",
+    "lists"
+  ],
+  "author": "Sean Ezell",
+  "license": "MIT"
+}

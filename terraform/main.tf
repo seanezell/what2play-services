@@ -342,3 +342,25 @@ resource "aws_dynamodb_table" "what2play" {
         projection_type = "ALL"
     }
 }
+
+resource "aws_dynamodb_table" "what2play_picks" {
+    name           = "what2play-picks"
+    billing_mode   = "PAY_PER_REQUEST"
+    hash_key       = "PK"
+    range_key      = "SK"
+
+    attribute {
+        name = "PK"
+        type = "S"
+    }
+    
+    attribute {
+        name = "SK" 
+        type = "S"
+    }
+
+    ttl {
+        attribute_name = "ttl"
+        enabled        = true
+    }
+}
