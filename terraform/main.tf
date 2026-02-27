@@ -171,6 +171,7 @@ module "apigw_methods" {
     APIResponseTemplates = each.value.response_mapping != "" ? { "application/json" = file("${path.module}/mapping-templates/${each.value.response_mapping}.vtl") } : null
     APIMethodRequestParameters      = each.value.method != "POST" ? each.value.methodReqParams : {}
     APIIntegrationRequestParameters = each.value.method != "POST" ? each.value.integrationReqParams : {}
+    APIMethodAuth = lookup(each.value, "authorizer", "COGNITO_USER_POOLS")
     validator = each.value.validator == "body_validator" ? module.apigw.apigw_validator_body_id : module.apigw.apigw_validator_querystring_id
     authorizer_id = module.apigw.cognito_authorizer_id
 }
