@@ -145,7 +145,8 @@ methods = {
         "model": "addGameModel",
         "methodReqParams" : {},
         "integrationReqParams" : {},
-        "validator" : "body_validator"
+        "validator" : "body_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "user-get-games": {
         "resource": "user-games",
@@ -160,7 +161,8 @@ methods = {
         "model": "",
         "methodReqParams" : {},
         "integrationReqParams" : {},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "user-delete-game": {
         "resource": "user-game_id",
@@ -175,7 +177,8 @@ methods = {
         "model": "",
         "methodReqParams" : {"method.request.path.game_id": true},
         "integrationReqParams" : {"integration.request.path.game_id": "method.request.path.game_id"},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "user-update-game": {
         "resource": "user-game_id",
@@ -190,7 +193,8 @@ methods = {
         "model": "updateGameModel",
         "methodReqParams" : {"method.request.path.game_id": true},
         "integrationReqParams" : {"integration.request.path.game_id": "method.request.path.game_id"},
-        "validator" : "body_validator"
+        "validator" : "body_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "user-get-profile": {
         "resource": "user-profile",
@@ -205,7 +209,8 @@ methods = {
         "model": "",
         "methodReqParams" : {},
         "integrationReqParams" : {},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "user-put-profile": {
         "resource": "user-profile",
@@ -220,7 +225,8 @@ methods = {
         "model": "userProfileModel",
         "methodReqParams" : {},
         "integrationReqParams" : {},
-        "validator" : "body_validator"
+        "validator" : "body_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "username-validation": {
         "resource": "username-validation",
@@ -235,7 +241,8 @@ methods = {
         "model": "validateUsernameModel",
         "methodReqParams" : {},
         "integrationReqParams" : {},
-        "validator" : "body_validator"
+        "validator" : "body_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "friends-list": {
         "resource": "friends-list",
@@ -250,7 +257,8 @@ methods = {
         "model": "",
         "methodReqParams" : {},
         "integrationReqParams" : {},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "friends-search": {
         "resource": "friends-search",
@@ -265,7 +273,8 @@ methods = {
         "model": "",
         "methodReqParams" : {"method.request.querystring.query": true},
         "integrationReqParams" : {"integration.request.querystring.query": "method.request.querystring.query"},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "friends-add-friend": {
         "resource": "friends-user_id",
@@ -280,7 +289,8 @@ methods = {
         "model": "",
         "methodReqParams" : {"method.request.path.friend_user_id": true},
         "integrationReqParams" : {"integration.request.path.friend_user_id": "method.request.path.friend_user_id"},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "friends-remove-friend": {
         "resource": "friends-user_id",
@@ -295,7 +305,8 @@ methods = {
         "model": "",
         "methodReqParams" : {"method.request.path.friend_user_id": true},
         "integrationReqParams" : {"integration.request.path.friend_user_id": "method.request.path.friend_user_id"},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "friends-get-games": {
         "resource": "friends-games",
@@ -310,7 +321,8 @@ methods = {
         "model": "",
         "methodReqParams" : {"method.request.querystring.user_id": true},
         "integrationReqParams" : {"integration.request.querystring.user_id": "method.request.querystring.user_id"},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "groups-create": {
         "resource": "groups-create",
@@ -325,7 +337,8 @@ methods = {
         "model": "createGroupModel",
         "methodReqParams" : {},
         "integrationReqParams" : {},
-        "validator" : "body_validator"
+        "validator" : "body_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "groups-list": {
         "resource": "groups-list",
@@ -340,7 +353,8 @@ methods = {
         "model": "",
         "methodReqParams" : {},
         "integrationReqParams" : {},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "groups-get": {
         "resource": "groups-group_id",
@@ -355,7 +369,8 @@ methods = {
         "model": "",
         "methodReqParams" : {"method.request.path.group_id": true},
         "integrationReqParams" : {"integration.request.path.group_id": "method.request.path.group_id"},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "groups-delete": {
         "resource": "groups-group_id",
@@ -370,7 +385,8 @@ methods = {
         "model": "",
         "methodReqParams" : {"method.request.path.group_id": true},
         "integrationReqParams" : {"integration.request.path.group_id": "method.request.path.group_id"},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "groups-pick": {
         "resource": "groups-pick",
@@ -385,7 +401,8 @@ methods = {
         "model": "pickGameModel",
         "methodReqParams" : {},
         "integrationReqParams" : {},
-        "validator" : "body_validator"
+        "validator" : "body_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
     },
     "lists-games": {
         "resource": "lists-games",
