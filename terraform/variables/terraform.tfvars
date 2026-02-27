@@ -16,7 +16,8 @@ roots = [
     "user",
     "usernames",
     "groups",
-    "friends"
+    "friends",
+    "lists"
 ]
 
 lambdas = {
@@ -61,6 +62,13 @@ lambdas = {
         "memory_size": 512,
         "log_retention": 14,
         "description": "Handle group operations"
+    },
+    "what2play-lists": {
+        "runtime": "nodejs22.x",
+        "timeout": 30,
+        "memory_size": 512,
+        "log_retention": 14,
+        "description": "Handle top and recent game picks lists"
     }
 }
 
@@ -116,6 +124,10 @@ resources = {
     "groups-pick": {
         "root": "groups",
         "path": "pick"
+    },
+    "lists-games": {
+        "root": "lists",
+        "path": "games"
     }
 }
 
@@ -374,5 +386,20 @@ methods = {
         "methodReqParams" : {},
         "integrationReqParams" : {},
         "validator" : "body_validator"
+    },
+    "lists-games": {
+        "resource": "lists-games",
+        "uri_type": "lambda",
+        "uri": "what2play-lists",
+        "method": "GET",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-lists-request",
+        "response_mapping" : "",
+        "request_schema" : "",
+        "model": "",
+        "methodReqParams" : {"method.request.querystring.type": false, "method.request.querystring.limit": false, "method.request.querystring.lastKey": false},
+        "integrationReqParams" : {"integration.request.querystring.type": "method.request.querystring.type", "integration.request.querystring.limit": "method.request.querystring.limit", "integration.request.querystring.lastKey": "method.request.querystring.lastKey"},
+        "validator" : "querystring_validator"
     }
 }

@@ -44,7 +44,7 @@ exports.pickGameForGroup = async (dynamoClient, user_id, group_id) => {
     await updateGroupPickHistory(dynamoClient, user_id, group_id, {
         game_id: pickedGameId,
         game_name: gameName
-    });
+    }, group.group_name);
     
     return {
         game_id: pickedGameId,

@@ -1,0 +1,10 @@
+{
+    "httpMethod": "$context.httpMethod",
+    "user_id": "$context.authorizer.claims.sub",
+    "path": "$context.resourcePath",
+    "query": {
+        "type": "$input.params('type')",
+        "limit": "$input.params('limit')",
+        "lastKey": "$input.params('lastKey')"
+    }
+}
