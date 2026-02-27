@@ -400,6 +400,7 @@ methods = {
         "model": "",
         "methodReqParams" : {"method.request.querystring.type": false, "method.request.querystring.limit": false, "method.request.querystring.lastKey": false},
         "integrationReqParams" : {"integration.request.querystring.type": "method.request.querystring.type", "integration.request.querystring.limit": "method.request.querystring.limit", "integration.request.querystring.lastKey": "method.request.querystring.lastKey"},
-        "validator" : "querystring_validator"
+        "validator" : "querystring_validator",
+        "authorizer" : "NONE"
     }
 }
