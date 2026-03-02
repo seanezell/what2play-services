@@ -97,6 +97,8 @@ const updateUsernameIndex = async (dynamoClient, userId, oldUsername, newUsernam
             SK: `USER#${userId}`,
             GSI1PK: `USERNAME#${newUsername.toLowerCase()}`,
             GSI1SK: `USER#${userId}`,
+            GSI2PK: 'USERS',
+            GSI2SK: newUsername.toLowerCase(),
             created_date: new Date().toISOString()
         }
     };
