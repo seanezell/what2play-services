@@ -1,5 +1,5 @@
-const { S3Client } = require('@aws-sdk/client-s3');
-const { createPresignedPost } = require('@aws-sdk/s3-presigned-post');
+const { S3Client, PutObjectCommand } = require('@aws-sdk/client-s3');
+const { getSignedUrl } = require('@aws-sdk/s3-request-presigner');
 
 const s3Client = new S3Client();
 
@@ -22,22 +22,17 @@ exports.generateAvatarUploadUrl = async (userId, filename) => {
     
     const key = `what2play/${userId}/avatar.png`;
     
-    const { url, fields } = await createPresignedPost(s3Client, {
+    const command = new PutObjectCommand({
         Bucket: 'seanezell-cdn-content',
         Key: key,
-        Conditions: [
-            ['content-length-range', 0, 5242880], // 5MB max
-            ['starts-with', '$Content-Type', 'image/']
-        ],
-        Fields: {
-            acl: 'public-read'
-        },
-        Expires: 300 // 5 minutes
+        ContentType: 'image/png',
+        ACL: 'public-read'
     });
     
+    const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+    
     return {
-        upload_url: url,
-        fields,
+        upload_url: uploadUrl,
         avatar_url: `https://cdn.seanezell.com/${key}`
     };
 };
