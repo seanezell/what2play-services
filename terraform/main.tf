@@ -102,6 +102,17 @@ data "aws_iam_policy_document" "lambda_doc" {
             "arn:aws:dynamodb:${data.aws_region.current.region}:${data.aws_caller_identity.current.id}:table/*"
         ]
     }
+    statement {
+        sid    = "S3AvatarUpload"
+        effect = "Allow"
+        actions = [
+            "s3:PutObject",
+            "s3:PutObjectAcl"
+        ]
+        resources = [
+            "arn:aws:s3:::seanezell-cdn-content/what2play/*"
+        ]
+    }
 }
 
 module "roles_n_policies" {

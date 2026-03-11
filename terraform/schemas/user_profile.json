@@ -15,6 +15,10 @@
         "preferred_platform": {
             "type": "string",
             "enum": ["PC", "PlayStation", "Xbox", "Nintendo", "Mobile"]
+        },
+        "avatar_url": {
+            "type": "string",
+            "maxLength": 500
         }
     },
     "required": ["username"],

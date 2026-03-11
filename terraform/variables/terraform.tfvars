@@ -88,7 +88,11 @@ resources = {
     "user-profile": {
         "root": "user",
         "path": "profile"
-    }
+    },
+    "user-avatar": {
+        "root": "user",
+        "path": "avatar"
+    },
     "username-validation": {
         "root": "usernames",
         "path": "validate"
@@ -223,6 +227,22 @@ methods = {
         "response_mapping" : "",
         "request_schema" : "user_profile",
         "model": "userProfileModel",
+        "methodReqParams" : {},
+        "integrationReqParams" : {},
+        "validator" : "body_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
+    },
+    "user-post-avatar": {
+        "resource": "user-avatar",
+        "uri_type": "lambda",
+        "uri": "what2play-user-profile",
+        "method": "POST",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-user-avatar-request",
+        "response_mapping" : "",
+        "request_schema" : "avatar_upload",
+        "model": "avatarUploadModel",
         "methodReqParams" : {},
         "integrationReqParams" : {},
         "validator" : "body_validator",
