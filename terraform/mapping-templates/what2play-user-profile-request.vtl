@@ -5,6 +5,7 @@
     #set($body = $util.parseJson($input.body))
     "username": "$body.username",
     "real_name": "$body.real_name",
-    "preferred_platform": "$body.preferred_platform"
+    "preferred_platform": "$body.preferred_platform",
+    "avatar_url": "$body.avatar_url"
     #end
 }
