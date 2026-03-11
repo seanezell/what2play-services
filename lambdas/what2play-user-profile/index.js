@@ -3,7 +3,14 @@ const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
 
 const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient());
 
-const { getUserProfile, updateUserProfile, validateUsername } = require('./routes');
+const { getUserProfile, updateUserProfile, validateUsername, generateAvatarUploadUrl } = require('./routes');
+
+class HttpError extends Error {
+    constructor(statusCode, message) {
+        super(message);
+        this.statusCode = statusCode;
+    }
+}
 
 exports.handler = async (event) => {
     try {
@@ -12,10 +19,7 @@ exports.handler = async (event) => {
         const { httpMethod, user_id } = event;
         
         if (!user_id) {
-            return {
-                statusCode: 401,
-                error: 'User not authenticated'
-            };
+            throw new HttpError(401, 'User not authenticated');
         }
         
         switch (httpMethod) {
@@ -24,19 +28,19 @@ exports.handler = async (event) => {
             case 'PUT':
                 return await updateUserProfile(dynamoClient, user_id, event);
             case 'POST':
-                return await validateUsername(dynamoClient, event.username);
+                if (event.path.includes('/avatar')) {
+                    return await generateAvatarUploadUrl(user_id, event.filename);
+                } else {
+                    return await validateUsername(dynamoClient, event.username);
+                }
             default:
-                return {
-                    statusCode: 405,
-                    error: 'Method not allowed'
-                };
+                throw new HttpError(405, 'Method not allowed');
         }
         
     } catch (error) {
         console.error('Lambda error:', error);
-        return {
-            statusCode: 500,
-            error: error.message
-        };
+        const statusCode = error.statusCode || 500;
+        const message = error.message || 'Internal server error';
+        throw JSON.stringify({ statusCode, error: message });
     }
 };
