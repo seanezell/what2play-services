@@ -11,8 +11,8 @@ class HttpError extends Error {
 }
 
 exports.generateAvatarUploadUrl = async (userId) => {
-    const bucket = process.env.CDN_BUCKET;
-    const domain = process.env.CDN_DOMAIN;
+    const bucket = 'seanezell-cdn-content';
+    const domain = 'cdn.seanezell.com';
     const key = `what2play/${userId}/avatar.png`;
 
     const command = new PutObjectCommand({

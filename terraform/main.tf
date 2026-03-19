@@ -133,7 +133,6 @@ module "lambdas" {
     lambda_log_retention = each.value.log_retention
     lambda_role_arn      = module.roles_n_policies.output_roleid
     kms_key_arn          = aws_kms_key.cloudwatch_logs.arn
-    environment_variables = lookup(each.value, "environment", {})
 }
 
 module "apigw" {
