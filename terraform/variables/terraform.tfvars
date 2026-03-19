@@ -47,7 +47,11 @@ lambdas = {
         "timeout": 30,
         "memory_size": 512,
         "log_retention": 14,
-        "description": "Handle user profile operations"
+        "description": "Handle user profile operations",
+        "environment": {
+            "CDN_BUCKET": "seanezell-cdn-content",
+            "CDN_DOMAIN": "cdn.seanezell.com"
+        }
     },
     "what2play-friends": {
         "runtime": "nodejs22.x",

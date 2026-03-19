@@ -10,29 +10,21 @@ class HttpError extends Error {
     }
 }
 
-exports.generateAvatarUploadUrl = async (userId, filename) => {
-    if (!filename) {
-        throw new HttpError(400, 'filename is required');
-    }
-    
-    // Validate PNG extension
-    if (!filename.toLowerCase().endsWith('.png')) {
-        throw new HttpError(400, 'Only PNG files are allowed');
-    }
-    
+exports.generateAvatarUploadUrl = async (userId) => {
+    const bucket = process.env.CDN_BUCKET;
+    const domain = process.env.CDN_DOMAIN;
     const key = `what2play/${userId}/avatar.png`;
-    
+
     const command = new PutObjectCommand({
-        Bucket: 'seanezell-cdn-content',
+        Bucket: bucket,
         Key: key,
-        ContentType: 'image/png',
-        ACL: 'public-read'
+        ContentType: 'image/png'
     });
-    
-    const uploadUrl = await getSignedUrl(s3Client, command, { expiresIn: 300 });
-    
+
+    const upload_url = await getSignedUrl(s3Client, command, { expiresIn: 300 });
+
     return {
-        upload_url: uploadUrl,
-        avatar_url: `https://cdn.seanezell.com/${key}`
+        upload_url,
+        avatar_url: `https://${domain}/${key}`
     };
 };

@@ -106,8 +106,7 @@ data "aws_iam_policy_document" "lambda_doc" {
         sid    = "S3AvatarUpload"
         effect = "Allow"
         actions = [
-            "s3:PutObject",
-            "s3:PutObjectAcl"
+            "s3:PutObject"
         ]
         resources = [
             "arn:aws:s3:::seanezell-cdn-content/what2play/*"
@@ -134,6 +133,7 @@ module "lambdas" {
     lambda_log_retention = each.value.log_retention
     lambda_role_arn      = module.roles_n_policies.output_roleid
     kms_key_arn          = aws_kms_key.cloudwatch_logs.arn
+    environment_variables = lookup(each.value, "environment", {})
 }
 
 module "apigw" {

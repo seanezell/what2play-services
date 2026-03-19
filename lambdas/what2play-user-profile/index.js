@@ -29,7 +29,7 @@ exports.handler = async (event) => {
                 return await updateUserProfile(dynamoClient, user_id, event);
             case 'POST':
                 if (event.path.includes('/avatar')) {
-                    return await generateAvatarUploadUrl(user_id, event.filename);
+                    return await generateAvatarUploadUrl(user_id);
                 } else {
                     return await validateUsername(dynamoClient, event.username);
                 }
