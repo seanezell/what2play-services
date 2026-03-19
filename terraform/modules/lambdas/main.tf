@@ -21,13 +21,6 @@ resource "aws_lambda_function" "lambdas" {
     runtime          = var.lambda_runtime
     memory_size      = var.lambda_memory_size
     publish          = true
-
-    dynamic "environment" {
-        for_each = length(var.environment_variables) > 0 ? [1] : []
-        content {
-            variables = var.environment_variables
-        }
-    }
 }
 
 resource "aws_cloudwatch_log_group" "logs" {
