@@ -32,3 +32,9 @@ variable "kms_key_arn" {
     description = "KMS Key ARN for encrypting CloudWatch Logs"
     type        = string
 }
+
+variable "environment_variables" {
+    description = "Environment variables for the Lambda function"
+    type        = map(string)
+    default     = {}
+}
