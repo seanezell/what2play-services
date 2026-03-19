@@ -5,7 +5,7 @@ const { loadUserProfile } = require('../data/loadUserProfile');
 const { validateUsername } = require('./validateUsername');
 
 exports.updateUserProfile = async (dynamoClient, userId, event) => {
-    const { username, real_name, preferred_platform } = event;
+    const { username, real_name, preferred_platform, avatar_url } = event;
     
     // Validate required fields
     if (!username) {
@@ -66,6 +66,7 @@ exports.updateUserProfile = async (dynamoClient, userId, event) => {
             username: username,
             real_name: real_name || currentProfile.real_name,
             preferred_platform: preferred_platform || currentProfile.preferred_platform,
+            avatar_url: avatar_url || currentProfile.avatar_url,
             profile_complete: true,
             updated_date: now
         }
