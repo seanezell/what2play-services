@@ -172,7 +172,7 @@ module "apigw_methods" {
     APIResourceRestAPIID = module.apigw.apigw_id
     APIHTTPMethod            = each.value.method
     APIIntegrationHTTPMethod = each.value.integration_method
-    APIRequestModels         = each.value.request_schema != "" ? { "application/json" = aws_api_gateway_model.request_models["${each.key}"].name } : null
+    APIRequestModels         = each.value.request_schema != "" ? { "application/json" = aws_api_gateway_model.request_models["${each.key}"].name } : {}
     StatusCode               = "200" 
     APIIntegrationURI = each.value.uri_type != "uri" ? module.lambdas["${each.value.uri}"].invoke_arn : each.value.uri
     APIIntegrationType = each.value.type
