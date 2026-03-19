@@ -1,6 +1,5 @@
 {
     "httpMethod": "$context.httpMethod",
     "user_id": "$context.authorizer.claims.sub",
-    "path": "$context.resourcePath",
-    "filename": $input.json('$.filename')
+    "path": "$context.resourcePath"
 }

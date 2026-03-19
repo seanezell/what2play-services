@@ -1,11 +1,5 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
     "type": "object",
-    "required": ["filename"],
-    "properties": {
-        "filename": {
-            "type": "string",
-            "pattern": "^[a-zA-Z0-9._-]+\\.png$"
-        }
-    }
+    "properties": {}
 }
