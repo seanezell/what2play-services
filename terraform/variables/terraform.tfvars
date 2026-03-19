@@ -392,6 +392,22 @@ methods = {
         "validator" : "querystring_validator",
         "authorizer" : "COGNITO_USER_POOLS"
     },
+    "groups-update": {
+        "resource": "groups-group_id",
+        "uri_type": "lambda",
+        "uri": "what2play-groups",
+        "method": "PUT",
+        "integration_method" : "POST",
+        "type" : "AWS",
+        "request_mapping" : "what2play-groups-update-request",
+        "response_mapping" : "",
+        "request_schema" : "update_group",
+        "model": "updateGroupModel",
+        "methodReqParams" : {"method.request.path.group_id": true},
+        "integrationReqParams" : {"integration.request.path.group_id": "method.request.path.group_id"},
+        "validator" : "body_validator",
+        "authorizer" : "COGNITO_USER_POOLS"
+    },
     "groups-delete": {
         "resource": "groups-group_id",
         "uri_type": "lambda",
