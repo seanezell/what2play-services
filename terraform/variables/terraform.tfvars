@@ -241,11 +241,11 @@ methods = {
         "type" : "AWS",
         "request_mapping" : "what2play-user-avatar-request",
         "response_mapping" : "",
-        "request_schema" : "avatar_upload",
-        "model": "avatarUploadModel",
+        "request_schema" : "",
+        "model": "",
         "methodReqParams" : {},
         "integrationReqParams" : {},
-        "validator" : "body_validator",
+        "validator" : "querystring_validator",
         "authorizer" : "COGNITO_USER_POOLS"
     },
     "username-validation": {
