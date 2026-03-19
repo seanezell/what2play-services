@@ -1,0 +1,21 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "type": "object",
+    "properties": {
+        "group_name": {
+            "type": "string",
+            "minLength": 1
+        },
+        "members": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "required": ["user_id", "username"],
+                "properties": {
+                    "user_id": { "type": "string" },
+                    "username": { "type": "string" }
+                }
+            }
+        }
+    }
+}

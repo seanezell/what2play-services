@@ -3,7 +3,7 @@ const { DynamoDBDocumentClient } = require('@aws-sdk/lib-dynamodb');
 
 const dynamoClient = DynamoDBDocumentClient.from(new DynamoDBClient());
 
-const { createGroup, listGroups, getGroupDetails, deleteGroup, pickGameForGroup } = require('./routes');
+const { createGroup, listGroups, getGroupDetails, deleteGroup, pickGameForGroup, updateGroup } = require('./routes');
 
 class HttpError extends Error {
     constructor(statusCode, message) {
@@ -16,7 +16,7 @@ exports.handler = async (event) => {
     try {
         console.log('Event received:', JSON.stringify(event, null, 2));
         
-        const { user_id, httpMethod, group_id, group_name, member_ids } = event;
+        const { user_id, httpMethod, group_id, group_name, member_ids, members } = event;
         
         if (!user_id) {
             throw new HttpError(401, 'User not authenticated');
@@ -37,6 +37,8 @@ exports.handler = async (event) => {
                 }
             case 'DELETE':
                 return await deleteGroup(dynamoClient, user_id, group_id);
+            case 'PUT':
+                return await updateGroup(dynamoClient, user_id, group_id, { group_name, members });
             default:
                 throw new HttpError(405, 'Method not allowed');
         }

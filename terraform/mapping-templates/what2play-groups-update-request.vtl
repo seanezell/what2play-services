@@ -1,0 +1,11 @@
+{
+    "httpMethod": "$context.httpMethod",
+    "user_id": "$context.authorizer.claims.sub",
+    "path": "$context.resourcePath",
+    "group_id": "$input.params('group_id')",
+    #if($input.body != "")
+    #set($body = $util.parseJson($input.body))
+    "group_name": "$body.group_name",
+    "members": $input.json('$.members')
+    #end
+}

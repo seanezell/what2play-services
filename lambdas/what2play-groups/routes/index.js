@@ -3,5 +3,6 @@ module.exports = {
     getGroupDetails: require('./getGroupDetails').getGroupDetails,
     listGroups: require('./listGroups').listGroups,
     deleteGroup: require('./deleteGroup').deleteGroup,
-    pickGameForGroup: require('./pickGameForGroup').pickGameForGroup
+    pickGameForGroup: require('./pickGameForGroup').pickGameForGroup,
+    updateGroup: require('./updateGroup').updateGroup
 };
