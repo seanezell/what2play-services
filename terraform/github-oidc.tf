@@ -93,6 +93,7 @@ locals {
           "iam:TagRole",
           "iam:UntagRole",
           "iam:ListRoleTags",
+          "iam:ListOpenIDConnectProviders"
         ]
         Resource = [
           "arn:aws:iam::${data.aws_caller_identity.current.account_id}:role/${var.role_name}",
@@ -148,6 +149,7 @@ locals {
           "kms:ListGrants",
           "kms:RevokeGrant",
           "kms:RetireGrant",
+          "kms:GetKeyRotationStatus"
         ]
         Resource = aws_kms_key.cloudwatch_logs.arn
       },
