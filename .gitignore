@@ -3,6 +3,7 @@
 .terraform.lock.hcl
 zip/
 copilot-instructions.md
+working-instructions/
 
 # Logs
 logs
