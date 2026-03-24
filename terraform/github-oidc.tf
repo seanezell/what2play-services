@@ -126,7 +126,8 @@ resource "aws_iam_role_policy" "github_actions_terraform_policy" {
                 Action = [
                     "dynamodb:GetItem",
                     "dynamodb:PutItem",
-                    "dynamodb:DeleteItem"
+                    "dynamodb:DeleteItem",
+                    "dynamodb:DescribeTable"
                 ]
                 Resource = "arn:aws:dynamodb:us-west-2:*:table/terraform_state"
             },
