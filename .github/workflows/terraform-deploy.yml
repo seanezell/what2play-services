@@ -86,7 +86,26 @@ jobs:
 
       - name: Terraform Plan
         id: plan
-        run: terraform plan -var-file variables/terraform.tfvars -no-color
+        run: |
+          set -eo pipefail
+          terraform version
+          # Full log to file so the job log can be truncated without losing the error.
+          terraform plan -var-file variables/terraform.tfvars -no-color -compact-warnings \
+            2>&1 | tee plan-full.log
+
+      - name: Terraform plan — tail log on failure
+        if: failure() && steps.plan.outcome == 'failure'
+        run: |
+          echo "========== last 200 lines of plan-full.log =========="
+          tail -n 200 plan-full.log || true
+          echo "========== (download artifact terraform-plan-log for full output) =========="
+
+      - name: Upload Terraform plan log
+        if: failure() && steps.plan.outcome == 'failure'
+        uses: actions/upload-artifact@v4
+        with:
+          name: terraform-plan-log
+          path: terraform/plan-full.log
 
       - name: Terraform Apply
         id: apply
