@@ -53,7 +53,8 @@ resource "aws_iam_role_policy" "github_actions_terraform_policy" {
                     "iam:UntagRole",
                     "iam:GetOpenIDConnectProvider",
                     "iam:ListOpenIDConnectProviders",
-                    "iam:GetPolicy"
+                    "iam:GetPolicy",
+                    "iam:GetPolicyVersion"
                 ]
                 Resource = "*"
             },
