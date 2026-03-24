@@ -1,12 +1,78 @@
-# what2play-services
-microservices for What 2 Play
+# What 2 Play Services
 
-## API Design Philosophy
-This API uses explicit action verbs in URLs (`/groups/create`) rather than 
-pure REST (`POST /groups`) for clarity and infrastructure optimization. 
-HTTP verbs still define operations, maintaining RESTful principles where 
-they provide value.
+Backend API and application data for the What 2 Play app: API Gateway, Node.js Lambdas, DynamoDB, and Terraform for this stack. Shared foundations (static hosting, Cognito, DNS, post-confirmation trigger) live in the infrastructure repo.
 
+## Project Breadcrumbs
+
+What 2 Play is split across multiple repos with distinct responsibilities:
+
+- [`what2play`](https://github.com/seanezell/what2play): pseudo-parent repo for high-level docs and portfolio entrypoint
+- [`what2play-infrastructure`](https://github.com/seanezell/what2play-infrastructure): Terraform-managed shared AWS infrastructure (hosting edge, auth, DNS, post-confirmation Lambda, deploy access)
+- [`what2play-services`](https://github.com/seanezell/what2play-services) (this repo): API Gateway + application Lambdas + service data resources
+- [`what2play-client`](https://github.com/seanezell/what2play-client): React web app
+
+## What This Repo Owns
+
+- REST API (API Gateway) integrated with Cognito for authenticated routes
+- Lambda function source under `lambdas/*` (games, friends, groups, lists, user profile, etc.)
+- Application DynamoDB tables and Lambda execution IAM wired through Terraform
+- GitHub Actions OIDC role and policy used by CI to plan/apply this Terraform root module
+- Remote state: S3 backend + state locking (see `terraform/main.tf` backend block)
+
+## Repository Structure
+
+- `terraform/`: root Terraform module (`main.tf`, `variables/`, `modules/*`, `github-oidc.tf`)
+- `lambdas/`: one package per Lambda; npm workspaces + Jest at `lambdas/package.json`
+- `.github/workflows/terraform-deploy.yml`: package Lambdas, then Terraform fmt/init/validate/plan/apply on `main`
+- `.github/workflows/lambda-tests.yml`: `npm ci` + `npm test` on pull requests that touch `lambdas/**`
+- `.cursor/rules/`: Cursor agent rules for this repo
+
+## API Design Note
+
+URLs use explicit action segments where it helps clarity and mapping (for example `/groups/create`) while HTTP methods still distinguish operations. Pure REST is not the goal everywhere.
+
+## Deployment and CI
+
+**Terraform deploy** (`.github/workflows/terraform-deploy.yml`):
+
+- Triggers on push to `main` when `terraform/**` or `lambdas/**` change, or via `workflow_dispatch`
+- Packages each Lambda (zip + `npm install --production` per function), then runs Terraform through apply
+
+**Lambda tests** (`.github/workflows/lambda-tests.yml`):
+
+- Runs on pull requests that change `lambdas/**` so unit tests do not duplicate on merge to `main`
+
+Configure `AWS_ROLE_ARN` in repo secrets to the IAM role output from this stack (`github_actions_role_arn`).
+
+## Local Development
+
+### Terraform
+
+```bash
+cd terraform
+terraform init
+terraform fmt -recursive
+terraform validate
+terraform plan -var-file variables/terraform.tfvars
+```
+
+### Lambda unit tests
+
+```bash
+cd lambdas
+npm ci
+npm test
+```
+
+## Notes
+
+- Cognito User Pool and hosted UI are created in [`what2play-infrastructure`](https://github.com/seanezell/what2play-infrastructure); this repo references the pool ID in Terraform variables.
+- Frontend build and CloudFront deployment are owned by [`what2play-client`](https://github.com/seanezell/what2play-client).
+- **Cursor / AI:** project rules live in [`.cursor/rules/`](.cursor/rules/). Cross-repo conventions and a template for user-global Cursor rules are in [`working-instructions/PORTFOLIO_GLOBAL.md`](working-instructions/PORTFOLIO_GLOBAL.md).
+
+## License
+
+Private portfolio project. Sharing details privately for interviews is welcome.
 
 <!-- BEGIN_TF_DOCS -->
 ## Requirements

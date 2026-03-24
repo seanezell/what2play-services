@@ -1,0 +1,27 @@
+---
+description: Terraform backend, GitHub Actions, and OIDC patterns for this repo
+globs: terraform/**,.github/workflows/**
+alwaysApply: false
+---
+
+# Terraform and CI (what2play-services)
+
+## Backend
+
+- Terraform **1.10+** for S3 backend: use **`use_lockfile = true`**; do not reintroduce DynamoDB locking for this backend unless you have a migration reason.
+- State bucket/key in `terraform/main.tf` must stay consistent with IAM in `github-oidc.tf` (`tf_backend_bucket` local).
+
+## GitHub Actions
+
+- **`hashicorp/setup-terraform`**: set **`terraform_wrapper: false`** so `terraform plan` does not exit `2` on non-empty plans (GitHub treats non-zero as failure).
+- **Pin `terraform_version`** in the workflow; avoid unbounded `latest` for reproducible CI.
+- **Lambda unit tests** run in **`lambda-tests.yml` on PRs** only. Do not duplicate `npm test` in `terraform-deploy.yml` unless you explicitly want tests on every push to `main` again.
+
+## Plan / apply
+
+- Gate apply on a successful plan (avoid `continue-on-error` on plan with unconditional apply).
+- OIDC / IAM changes usually require a **local apply** with admin creds once so CI can assume the updated role.
+
+## Variables
+
+- Cognito pool ID is supplied via tfvars; the pool is created in **what2play-infrastructure**, not here.

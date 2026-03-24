@@ -1,0 +1,28 @@
+---
+description: What2Play services repo context, README, and cross-links
+alwaysApply: true
+---
+
+# what2play-services — repo context
+
+This repo is the **application API layer** in the What 2 Play split: API Gateway, Node Lambdas, app DynamoDB, and Terraform for this stack only. Shared infra (Cognito, static hosting, DNS, post-confirmation Lambda) lives in **what2play-infrastructure**; the web app is **what2play-client**. See `README.md` breadcrumbs.
+
+## Security posture (solo portfolio)
+
+Prefer **service-level wildcard IAM actions with tightly scoped `Resource` ARNs** over grinding least-privilege lists. OIDC trust should stay as narrow as you are willing (branch/repo). Document intentional tradeoffs in Terraform comments when non-obvious.
+
+## README and terraform-docs
+
+Keep human-written sections **above** `<!-- BEGIN_TF_DOCS -->`. Do not edit the fenced terraform-docs block by hand; regenerate with your terraform-docs workflow when the module changes.
+
+## Lambda error contract
+
+API Lambdas often use `throw JSON.stringify({ statusCode, error: message })`. In Jest, assert with `await expect(handler(...)).rejects.toBe(JSON.stringify({ ... }))`, not `rejects.toThrow()`.
+
+## Where to look
+
+| Area | Path |
+|------|------|
+| Deploy + OIDC policy | `terraform/github-oidc.tf`, `terraform/main.tf` |
+| Workflows | `.github/workflows/terraform-deploy.yml`, `lambda-tests.yml` |
+| Tests | `lambdas/package.json` (workspaces + Jest), `**/*.test.js` |
