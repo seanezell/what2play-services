@@ -26,7 +26,8 @@ locals {
         "arn:aws:lambda:${local.gh_act_region}:${local.gh_act_account_id}:function:what2play-*:*",
     ]
 
-    # Log streams use :log-stream:* (not log-group::log-stream). Trailing :* alone is not valid.
+    # Scoped log-group ARNs for mutating APIs. DescribeLogGroups / DescribeLogStreams are list APIs and
+    # only match IAM when Resource is "*" (AWS shows a odd log-group::log-stream ARN in denial messages).
     gh_act_log_group_arns = [
         "arn:aws:logs:${local.gh_act_region}:${local.gh_act_account_id}:log-group:/aws/lambda/what2play-*",
         "arn:aws:logs:${local.gh_act_region}:${local.gh_act_account_id}:log-group:/aws/lambda/what2play-*:log-stream:*",
@@ -155,6 +156,15 @@ resource "aws_iam_role_policy" "github_actions_terraform_policy" {
                 Effect = "Allow"
                 Action = ["logs:*"]
                 Resource = local.gh_act_log_group_arns
+            },
+            {
+                Sid    = "CloudWatchLogsDescribeNoResourceArn"
+                Effect = "Allow"
+                Action = [
+                    "logs:DescribeLogGroups",
+                    "logs:DescribeLogStreams",
+                ]
+                Resource = "*"
             },
             {
                 Sid    = "ApiGatewayRestAndDomains"
