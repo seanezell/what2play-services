@@ -26,13 +26,15 @@ locals {
         "arn:aws:lambda:${local.gh_act_region}:${local.gh_act_account_id}:function:what2play-*:*",
     ]
 
+    # Log streams use :log-stream:* (not log-group::log-stream). Trailing :* alone is not valid.
     gh_act_log_group_arns = [
         "arn:aws:logs:${local.gh_act_region}:${local.gh_act_account_id}:log-group:/aws/lambda/what2play-*",
-        "arn:aws:logs:${local.gh_act_region}:${local.gh_act_account_id}:log-group:/aws/lambda/what2play-*:*",
+        "arn:aws:logs:${local.gh_act_region}:${local.gh_act_account_id}:log-group:/aws/lambda/what2play-*:log-stream:*",
         "arn:aws:logs:${local.gh_act_region}:${local.gh_act_account_id}:log-group:API-Gateway-Execution-Logs_*",
-        "arn:aws:logs:${local.gh_act_region}:${local.gh_act_account_id}:log-group:API-Gateway-Execution-Logs_*:*",
+        "arn:aws:logs:${local.gh_act_region}:${local.gh_act_account_id}:log-group:API-Gateway-Execution-Logs_*:log-stream:*",
     ]
 
+    # API Gateway control-plane ARNs omit the account field on purpose — region::/path is correct.
     gh_act_apigateway_arns = [
         "arn:aws:apigateway:${local.gh_act_region}::/account",
         "arn:aws:apigateway:${local.gh_act_region}::/restapis",
