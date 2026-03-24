@@ -9,7 +9,7 @@ data "aws_iam_openid_connect_provider" "github_actions" {
 locals {
     github_actions_role_name = "what2play-services_githubaction_role"
     tf_backend_bucket        = "seanezell-terraform-backend"
-    ddb_table_names          = ["terraform_state", "what2play", "what2play-picks"]
+    ddb_table_names          = ["what2play", "what2play-picks"]
 
     gh_act_account_id = data.aws_caller_identity.current.account_id
     gh_act_region     = data.aws_region.current.region

@@ -1,5 +1,5 @@
 terraform {
-    required_version = ">= 1.4.0"
+    required_version = ">= 1.14.0"
 
     required_providers {
         aws = {
@@ -12,11 +12,13 @@ terraform {
         }
     }
 
+    # S3 native lockfile (Terraform 1.10+). DynamoDB locking for this backend is deprecated.
+    # Enable S3 bucket versioning on the state bucket for recovery (AWS console or separate IaC).
     backend "s3" {
-        bucket         = "seanezell-terraform-backend"
-        key            = "what2play-services/terraform.tfstate"
-        region         = "us-west-2"
-        dynamodb_table = "terraform_state"
+        bucket       = "seanezell-terraform-backend"
+        key          = "what2play-services/terraform.tfstate"
+        region       = "us-west-2"
+        use_lockfile = true
     }
 }
 
