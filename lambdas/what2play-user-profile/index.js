@@ -14,8 +14,6 @@ class HttpError extends Error {
 
 exports.handler = async (event) => {
     try {
-        console.log('Event received:', JSON.stringify(event, null, 2));
-        
         const { httpMethod, user_id } = event;
         
         if (!user_id) {

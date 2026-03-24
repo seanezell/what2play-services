@@ -45,8 +45,6 @@ const setCachedResult = (cacheKey, data) => {
 
 exports.handler = async (event) => {
     try {
-        console.log('Event received:', JSON.stringify(event, null, 2));
-        
         const { httpMethod, query } = event;
         
         // GET only endpoint

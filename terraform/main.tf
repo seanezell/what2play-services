@@ -98,7 +98,7 @@ data "aws_iam_policy_document" "lambda_doc" {
             "lambda:InvokeFunction"
         ]
         resources = [
-            "arn:aws:lambda:${data.aws_region.current.region}:${data.aws_caller_identity.current.id}:function:*"
+            "arn:aws:lambda:${data.aws_region.current.region}:${data.aws_caller_identity.current.id}:function:what2play-*"
         ]
     }
     statement {
@@ -114,7 +114,7 @@ data "aws_iam_policy_document" "lambda_doc" {
             "dynamodb:BatchGetItem",
         ]
         resources = [
-            "arn:aws:dynamodb:${data.aws_region.current.region}:${data.aws_caller_identity.current.id}:table/*"
+            "arn:aws:dynamodb:${data.aws_region.current.region}:${data.aws_caller_identity.current.id}:table/what2play*"
         ]
     }
     statement {
