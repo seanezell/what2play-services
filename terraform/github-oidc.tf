@@ -129,7 +129,11 @@ resource "aws_iam_role_policy" "github_actions_terraform_policy" {
                     "dynamodb:DeleteItem",
                     "dynamodb:DescribeTable"
                 ]
-                Resource = "arn:aws:dynamodb:us-west-2:*:table/terraform_state"
+                Resource = [
+                    "arn:aws:dynamodb:us-west-2:*:table/terraform_state", 
+                    "arn:aws:dynamodb:us-west-2:*:table/what2play", 
+                    "arn:aws:dynamodb:us-west-2:*:table/what2play-picks"
+                ]
             },
             {
                 Effect   = "Allow"
