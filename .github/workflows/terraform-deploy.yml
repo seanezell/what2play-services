@@ -68,9 +68,7 @@ jobs:
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-          # Pin CLI; `latest` drift breaks CI without a committed lockfile.
-          terraform_version: "1.10.5"
-          # Default wrapper remaps `terraform plan` to exit 2 when there are changes; GHA fails non-zero.
+          terraform_version: latest
           terraform_wrapper: false
 
       - name: Terraform Format
