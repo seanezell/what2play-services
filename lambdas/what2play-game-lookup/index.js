@@ -5,11 +5,9 @@ exports.handler = async (event) => {
     const { game_name } = event;
     
     try {
-        console.log(`Searching for game: ${game_name}`);
         
         // Step 1: Search Steam API
         const steamResults = await searchSteam(game_name);
-        console.log(`Found ${steamResults.length} Steam results`);
         
         if (steamResults.length === 0) {
             return {
@@ -22,11 +20,9 @@ exports.handler = async (event) => {
         
         // Filter out DLC, cosmetics, and upgrades
         const baseGames = filterBaseGames(steamResults, game_name);
-        console.log(`After filtering: ${baseGames.length} base games`);
         
         if (baseGames.length === 1) {
             // Single base game match - high confidence
-            console.log(`Single base game found: ${baseGames[0].name}`);
             const gameDetails = await getSteamDetails(baseGames[0].id);
             return {
                 confidence: 0.9,
@@ -38,7 +34,6 @@ exports.handler = async (event) => {
         // Check for exact or very close matches
         const exactMatch = findBestMatch(baseGames, game_name);
         if (exactMatch && exactMatch.confidence > 0.8) {
-            console.log(`High confidence match: ${exactMatch.game.name}`);
             const gameDetails = await getSteamDetails(exactMatch.game.id);
             return {
                 confidence: exactMatch.confidence,
@@ -48,7 +43,6 @@ exports.handler = async (event) => {
         }
         
         // Multiple matches - return filtered suggestions
-        console.log(`Multiple matches found, returning filtered suggestions`);
         return {
             confidence: 0.3,
             source: 'steam',

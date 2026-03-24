@@ -4,8 +4,6 @@ exports.searchSteam = async (gameName) => {
     return new Promise((resolve, reject) => {
         const url = `https://store.steampowered.com/api/storesearch/?term=${encodeURIComponent(gameName)}&l=english&cc=US`;
         
-        console.log(`Calling Steam API: ${url}`);
-        
         https.get(url, (res) => {
             let data = '';
             res.on('data', chunk => data += chunk);
@@ -28,8 +26,6 @@ exports.searchSteam = async (gameName) => {
 exports.getSteamDetails = async (appid) => {
     return new Promise((resolve, reject) => {
         const url = `https://store.steampowered.com/api/appdetails?appids=${appid}`;
-        
-        console.log(`Getting Steam details for appid: ${appid}`);
         
         https.get(url, (res) => {
             let data = '';

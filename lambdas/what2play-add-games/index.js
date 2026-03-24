@@ -16,9 +16,7 @@ class HttpError extends Error {
 }
 
 exports.handler = async (event) => {
-    try {
-        console.log('Event received:', JSON.stringify(event, null, 2));
-        
+    try {        
         const { game_name, platform, weight = 5, visibility = 'friends', additional_details, user_id } = event;
         
         if (!game_name || !platform) {
@@ -28,8 +26,6 @@ exports.handler = async (event) => {
         if (!user_id) {
             throw new HttpError(401, 'User not authenticated');
         }
-        
-        console.log(`Processing game: ${game_name} for user: ${user_id}`);
         
         // Step 1: Check if game exists
         const existingGame = await findExistingGame(game_name);
