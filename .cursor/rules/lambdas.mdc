@@ -1,0 +1,26 @@
+---
+description: Lambda workspace layout, Jest, and packaging notes
+globs: lambdas/**
+alwaysApply: false
+---
+
+# Lambdas (what2play-services)
+
+## Layout
+
+- **npm workspaces** rooted at `lambdas/package.json`. Install and test from **`lambdas/`**: `npm ci` and `npm test`.
+- One folder per function (`what2play-*`). Commit **`lambdas/package-lock.json`** so CI can `npm ci`.
+
+## Tests
+
+- Jest discovers **`**/*.test.js`**. Prefer unit tests for pure logic in `lib/` (and `what2play-lists/lib/cache.js`).
+- **`jest.mock('./routes', () => ({ ... }))`** factories must only use **`jest.fn()`** or literals — do not reference outer variables (Jest hoisting restriction).
+- Handler tests mock `@aws-sdk/client-dynamodb` and `@aws-sdk/lib-dynamodb` plus `./routes` as needed.
+
+## CI packaging
+
+- **`terraform-deploy.yml`** zips each Lambda and runs **`npm install --production`** inside each package directory. Changing workspace layout may affect what lands in the zip; verify deploy artifacts if you restructure dependencies.
+
+## Optional extraction
+
+- When index-level logic is hard to test (e.g. caching), extract small modules under `lib/` rather than duplicating logic in tests.
