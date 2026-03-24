@@ -128,7 +128,8 @@ resource "aws_iam_role_policy" "github_actions_terraform_policy" {
                     "dynamodb:PutItem",
                     "dynamodb:DeleteItem",
                     "dynamodb:DescribeTable",
-                    "dynamodb:DescribeContinuousBackups"
+                    "dynamodb:DescribeContinuousBackups",
+                    "dynamodb:DescribeTimeToLive"
                 ]
                 Resource = [
                     "arn:aws:dynamodb:us-west-2:*:table/terraform_state", 
