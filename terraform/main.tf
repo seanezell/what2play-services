@@ -1,4 +1,17 @@
 terraform {
+    required_version = ">= 1.4.0"
+
+    required_providers {
+        aws = {
+            source  = "hashicorp/aws"
+            version = "~> 6.0"
+        }
+        archive = {
+            source  = "hashicorp/archive"
+            version = "~> 2.4"
+        }
+    }
+
     backend "s3" {
         bucket         = "seanezell-terraform-backend"
         key            = "what2play-services/terraform.tfstate"
@@ -357,16 +370,16 @@ resource "aws_dynamodb_table" "what2play" {
     }
 
     global_secondary_index {
-        name     = "GSI1"
-        hash_key = "GSI1PK"
-        range_key = "GSI1SK"
+        name            = "GSI1"
+        hash_key        = "GSI1PK"
+        range_key       = "GSI1SK"
         projection_type = "ALL"
     }
 
     global_secondary_index {
-        name     = "GSI2"
-        hash_key = "GSI2PK"
-        range_key = "GSI2SK"
+        name            = "GSI2"
+        hash_key        = "GSI2PK"
+        range_key       = "GSI2SK"
         projection_type = "ALL"
     }
 }
