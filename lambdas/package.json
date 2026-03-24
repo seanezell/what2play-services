@@ -1,0 +1,24 @@
+{
+  "name": "what2play-lambdas",
+  "private": true,
+  "description": "Workspace root for Lambda packages and shared Jest tests",
+  "scripts": {
+    "test": "jest",
+    "test:coverage": "jest --coverage"
+  },
+  "workspaces": [
+    "what2play-add-games",
+    "what2play-friends",
+    "what2play-game-lookup",
+    "what2play-groups",
+    "what2play-lists",
+    "what2play-user-games",
+    "what2play-user-profile"
+  ],
+  "devDependencies": {
+    "jest": "^29.7.0"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}
